@@ -344,7 +344,7 @@ def calculate_weight(protocol_str, one_rm, tm_percentage=100, rounding=2.5):
     return re.sub(r"\d+(?:\.\d+)?(?:\s*,\s*\d+(?:\.\d+)?)*%", replace_group, protocol_str)
 
 # --- 7. UI STRUCTURE ---
-st.title(f"🏋️ Tier System Architect {APP_VERSION}")
+st.title(f"🏋️ Strength Programme Builder {APP_VERSION}")
 with st.sidebar:
     st.write("🔧 **Tools**")
     if st.button("🗑️ Reset All Data (Use if buggy)"):
