@@ -186,11 +186,6 @@ def load_data():
             
     return exercises, protocols
 
-def save_exercises(data):
-    with open(EXERCISE_FILE, 'w') as f: json.dump(data, f, indent=4)
-
-def save_protocols(data):
-    with open(PROTOCOL_FILE, 'w') as f: json.dump(data, f, indent=4)
 
 master_exercises, t1_schemes = load_data()
 
@@ -713,46 +708,9 @@ with tab_builder:
 with tab_db:
     st.header("📚 Master Exercise Library")
     
-    with st.expander("➕ Add New Exercise", expanded=False):
-        with st.form("add_ex_form"):
-            c1, c2, c3 = st.columns([2, 1, 1])
-            new_name = c1.text_input("Name")
-            new_lvl = c2.selectbox("Level", [1, 2, 3])
-            new_tier = c3.selectbox("Tier", ["Total Body", "Lower Body", "Upper Body", "Plyo", "Iso"])
+    
             
-            c4, c5, c6 = st.columns(3)
-            new_pattern = c4.selectbox("Pattern", ["Squat", "Hinge", "Lunge", "Push", "Pull", "Power", "Carry", "Core", "None"])
-            new_stance = c5.selectbox("Stance", ["Bilateral", "Unilateral", "Staggered", "None"])
-            new_type = c6.selectbox("Hierarchy", ["Primary", "Secondary", "Auxiliary"])
-            
-            new_tags = st.multiselect("Tags", [
-                "Plyo", "Power", "Explosive", "Pull", "Hinge", "Ham Dom", "Quad Dom", "Knee Ext", 
-                "Unilateral", "UB Push", "UB Pull", "Horizontal", "Vertical", "Iso",
-                "Core", "Carry", "Anterior Core", "Lateral Core", "Posterior Core", "Rotational Core",
-                "Glute", "Calf", "Adductor", "Arm", "Shoulder", "Overhead"
-            ])
-            
-            if st.form_submit_button("Add Exercise"):
-                if new_name:
-                    existing_names = [e["name"].strip().lower() for e in master_exercises]
-                    if new_name.strip().lower() in existing_names:
-                        st.error(f"'{new_name}' already exists in the database. Edit or rename it instead of adding a duplicate.")
-                    else:
-                        master_exercises.append({
-                            "name": new_name, 
-                            "level": new_lvl, 
-                            "tier": new_tier, 
-                            "pattern": new_pattern, 
-                            "stance": new_stance, 
-                            "type": new_type,
-                            "fv_zone": "None", 
-                            "tags": new_tags
-                        })
-                        save_exercises(master_exercises)
-                        st.success(f"Added {new_name}")
-                        st.rerun()
 
-    st.divider()
     
     c1, c2, c3, c4 = st.columns([2, 1, 1, 1])
     s_term = c1.text_input("🔍 Search DB")
@@ -783,37 +741,7 @@ with tab_db:
 with tab_protocols:
     st.header("📈 Protocol Library")
     
-    with st.expander("➕ Add New Protocol"):
-        with st.form("add_proto"):
-            pp = st.selectbox("Phase", ["Accumulation", "Intensification", "Realisation"])
-            pn = st.text_input("Name")
-            c1, c2, c3 = st.columns(3)
-            b = c1.text_input("Wk1 (Base)", "3x5 @ 70%")
-            l1 = c2.text_input("Wk2 (Load 1)", "3x5 @ 75%")
-            l2 = c3.text_input("Wk3 (Load 2)", "4x4 @ 80%")
-            
-            c4, c5, c6 = st.columns(3)
-            l3 = c4.text_input("Wk4 (Load 3 / Opt)", "-") 
-            p = c5.text_input("Wk5 (Perform)", "3x3 @ 85%")
-            drl = c6.text_input("De-Re-Load", "Deload")
-            
-            dl = st.text_input("Final Deload", "Deload")
-            
-            if st.form_submit_button("Add"):
-                if pn:
-                    if pp not in t1_schemes: t1_schemes[pp] = {}
-                    new_proto = {
-                        "Base": b, "Load 1": l1, "Load 2": l2, 
-                        "Perform": p, "De-Re-Load": drl, "De-load": dl
-                    }
-                    if l3 and l3 != "-":
-                        new_proto["Load 3"] = l3
-                        
-                    t1_schemes[pp][pn] = new_proto
-                    save_protocols(t1_schemes)
-                    st.rerun()
 
-    st.divider()
     
     view_phase = st.radio("View Phase", ["Accumulation", "Intensification", "Realisation"], horizontal=True)
     current_data = t1_schemes.get(view_phase, {})
