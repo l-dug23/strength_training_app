@@ -6,7 +6,7 @@ import re
 
 # --- 1. CONFIGURATION & FILE MANAGEMENT ---
 APP_VERSION = "v7.0"
-st.set_page_config(page_title=f"Tier System {APP_VERSION}", layout="wide", page_icon="🏋️")
+st.set_page_config(page_title=f"Strength Programme Builder {APP_VERSION}", layout="wide", page_icon="🏋️")
 
 EXERCISE_FILE = "exercises.json"
 PROTOCOL_FILE = "protocols.json"
