@@ -10,7 +10,7 @@ st.set_page_config(page_title=f"Tier System {APP_VERSION}", layout="wide", page_
 
 EXERCISE_FILE = "exercises.json"
 PROTOCOL_FILE = "protocols.json"
-
+ 
 # --- 2. DEFAULT DATA ---
 DEFAULT_EXERCISES = [
     # --- TOTAL BODY: OLYMPIC / POWER (Primary) ---
@@ -198,8 +198,7 @@ master_exercises, t1_schemes = load_data()
 if 'cycle_count' not in st.session_state: st.session_state.cycle_count = 1
 if 'previous_t1' not in st.session_state: st.session_state.previous_t1 = None
 if 'history_text' not in st.session_state: st.session_state.history_text = [] 
-if 'used_exercises' not in st.session_state: st.session_state.used_exercises = [] 
-if 'draft_plan' not in st.session_state: st.session_state.draft_plan = None 
+if 'draft_plan' not in st.session_state: st.session_state.draft_plan = None
 
 # --- 5. STATIC DEFINITIONS ---
 style_map = {
@@ -260,7 +259,15 @@ def get_ex_by_name(name):
 
 def get_smart_ex(tier=None, required_tag=None, required_pattern=None, required_type=None, level=1, exclude_names=None, exclude_stance=None, exclude_pattern=None, fuzzy_exclude=None, force_tier=None):
     if exclude_names is None: exclude_names = []
-    
+
+    # fuzzy_exclude now takes an exercise NAME (e.g. T1's primary name) and
+    # blocks candidates that share the same movement pattern, so "Front Squat"
+    # as T1 won't let "Back Squat" slip in as T2, etc.
+    fuzzy_exclude_pattern = None
+    if fuzzy_exclude:
+        fuzzy_ex_obj = get_ex_by_name(fuzzy_exclude)
+        fuzzy_exclude_pattern = fuzzy_ex_obj.get("pattern")
+
     # 1. GATHER CANDIDATES
     candidates = []
     for ex in master_exercises:
@@ -288,14 +295,9 @@ def get_smart_ex(tier=None, required_tag=None, required_pattern=None, required_t
         if exclude_stance and ex_stance == exclude_stance: continue
         if exclude_pattern and ex_pattern == exclude_pattern: continue
 
-        # Fuzzy Name Exclude
-        if fuzzy_exclude:
-            ex_words = set(ex["name"].lower().split())
-            bad_words = set(fuzzy_exclude.lower().split())
-            key_terms = ["trap", "bar", "db", "bb", "med", "ball"]
-            overlap = ex_words.intersection(bad_words)
-            if any(term in overlap for term in key_terms):
-                continue
+        # Movement-pattern exclude (replaces old word-matching fuzzy logic)
+        if fuzzy_exclude_pattern and ex_pattern == fuzzy_exclude_pattern:
+            continue
         
         candidates.append(ex)
 
@@ -327,14 +329,19 @@ def get_smart_ex(tier=None, required_tag=None, required_pattern=None, required_t
 def calculate_weight(protocol_str, one_rm, tm_percentage=100, rounding=2.5):
     if not one_rm: return protocol_str
     tm = one_rm * (tm_percentage / 100.0)
-    
-    def replacer(match):
-        pct = float(match.group(1))
-        w = tm * (pct / 100.0)
-        rw = round(w / rounding) * rounding
-        return f"{int(rw) if rw % 1 == 0 else rw}kg"
 
-    return re.sub(r"(\d+(?:\.\d+)?)%", replacer, protocol_str)
+    def replace_group(match):
+        nums = re.findall(r"\d+(?:\.\d+)?", match.group(0))
+        out = []
+        for n in nums:
+            w = tm * (float(n) / 100.0)
+            rw = round(w / rounding) * rounding
+            out.append(f"{int(rw) if rw % 1 == 0 else rw}kg")
+        return ",".join(out)
+
+    # Matches a run of comma-separated numbers that ends in a single trailing %
+    # e.g. "65, 75, 85%" -> "162.5kg,187.5kg,212.5kg"
+    return re.sub(r"\d+(?:\.\d+)?(?:\s*,\s*\d+(?:\.\d+)?)*%", replace_group, protocol_str)
 
 # --- 7. UI STRUCTURE ---
 st.title(f"🏋️ Tier System Architect {APP_VERSION}")
@@ -461,7 +468,15 @@ with tab_builder:
                     
                     if primary_ex["name"] not in temp_used: temp_used.append(primary_ex["name"])
                     
-                    style = active_pair_map.get(tier_key) or active_pair_map.get(tier_group)
+                    style_by_key = active_pair_map.get(tier_key)
+                    style_by_group = active_pair_map.get(tier_group)
+                    if style_by_key and style_by_group and style_by_key != style_by_group:
+                        st.warning(
+                            f"Session {i+1} {tier_key} ({tier_group}): both a '{tier_key}' pairing "
+                            f"style and a '{tier_group}' pairing style are set ('{style_by_key}' vs "
+                            f"'{style_by_group}'). Using '{style_by_key}'."
+                        )
+                    style = style_by_key or style_by_group
                     aux_list = [] 
                     
                     if style and tier_key != "T4":
@@ -605,7 +620,7 @@ with tab_builder:
                                 else:
                                     try:
                                         sch = t1_schemes[phase_input][protocol_choice][wk_label]
-                                    except:
+                                    except KeyError:
                                         sch = "3x5"
                             
                             # T2/T3/T4 Logic (Default Based)
@@ -691,19 +706,23 @@ with tab_db:
             
             if st.form_submit_button("Add Exercise"):
                 if new_name:
-                    master_exercises.append({
-                        "name": new_name, 
-                        "level": new_lvl, 
-                        "tier": new_tier, 
-                        "pattern": new_pattern, 
-                        "stance": new_stance, 
-                        "type": new_type,
-                        "fv_zone": "None", 
-                        "tags": new_tags
-                    })
-                    save_exercises(master_exercises)
-                    st.success(f"Added {new_name}")
-                    st.rerun()
+                    existing_names = [e["name"].strip().lower() for e in master_exercises]
+                    if new_name.strip().lower() in existing_names:
+                        st.error(f"'{new_name}' already exists in the database. Edit or rename it instead of adding a duplicate.")
+                    else:
+                        master_exercises.append({
+                            "name": new_name, 
+                            "level": new_lvl, 
+                            "tier": new_tier, 
+                            "pattern": new_pattern, 
+                            "stance": new_stance, 
+                            "type": new_type,
+                            "fv_zone": "None", 
+                            "tags": new_tags
+                        })
+                        save_exercises(master_exercises)
+                        st.success(f"Added {new_name}")
+                        st.rerun()
 
     st.divider()
     
