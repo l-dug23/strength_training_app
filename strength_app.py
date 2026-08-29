@@ -195,7 +195,6 @@ def save_protocols(data):
 master_exercises, t1_schemes = load_data()
 
 # --- 4. SESSION STATE INIT ---
-# --- 4. SESSION STATE INIT ---
 if 'cycle_count' not in st.session_state: st.session_state.cycle_count = 1
 if 'previous_t1' not in st.session_state: st.session_state.previous_t1 = None
 if 'history_text' not in st.session_state: st.session_state.history_text = [] 
@@ -333,6 +332,17 @@ def calculate_weight(protocol_str, one_rm, tm_percentage=100, rounding=2.5):
     if not one_rm: return protocol_str
     tm = one_rm * (tm_percentage / 100.0)
 
+    def replace_group(match):
+        nums = re.findall(r"\d+(?:\.\d+)?", match.group(0))
+        out = []
+        for n in nums:
+            w = tm * (float(n) / 100.0)
+            rw = round(w / rounding) * rounding
+            out.append(f"{int(rw) if rw % 1 == 0 else rw}kg")
+        return ",".join(out)
+
+    return re.sub(r"\d+(?:\.\d+)?(?:\s*,\s*\d+(?:\.\d+)?)*%", replace_group, protocol_str)
+
 def apply_progression(scheme_str, offset):
     """Shift the rep/time/distance number in a T2-T4 scheme string by `offset`
     reps, leaving sets and any suffix untouched. Never drops below 1."""
@@ -346,19 +356,6 @@ def apply_progression(scheme_str, offset):
         return f"{sets}x{new_reps}"
 
     return re.sub(r'(\d+)\s*x\s*(\d+)', replacer, scheme_str, count=1)
-
-    def replace_group(match):
-        nums = re.findall(r"\d+(?:\.\d+)?", match.group(0))
-        out = []
-        for n in nums:
-            w = tm * (float(n) / 100.0)
-            rw = round(w / rounding) * rounding
-            out.append(f"{int(rw) if rw % 1 == 0 else rw}kg")
-        return ",".join(out)
-
-    # Matches a run of comma-separated numbers that ends in a single trailing %
-    # e.g. "65, 75, 85%" -> "162.5kg,187.5kg,212.5kg"
-    return re.sub(r"\d+(?:\.\d+)?(?:\s*,\s*\d+(?:\.\d+)?)*%", replace_group, protocol_str)
 
 # --- 7. UI STRUCTURE ---
 st.title(f"🏋️ Strength Programme Builder {APP_VERSION}")
@@ -381,8 +378,8 @@ with tab_builder:
     with col_l:
         st.subheader("1. Configuration")
         st.caption(f"Cycle #{st.session_state.cycle_count}")
-        prog = st.session_state.accessory_progression
-        st.caption(f"Accessory volume offset — T2: {prog['T2']:+d} | T3: {prog['T3']:+d} | T4: {prog['T4']:+d}")
+        prog_offsets = st.session_state.accessory_progression
+        st.caption(f"Accessory volume offset — T2: {prog_offsets['T2']:+d} | T3: {prog_offsets['T3']:+d} | T4: {prog_offsets['T4']:+d}")
         
         user_level = st.selectbox("Athlete Level", [1, 2, 3], index=1)
         phase_input = st.selectbox("Phase", ["Accumulation", "Intensification", "Realisation"])
@@ -643,16 +640,20 @@ with tab_builder:
                                         sch = "3x5"
                             
                             # T2/T3/T4 Logic (Default Based)
-                                else:
+                            else:
+                                # Check the MAIN exercise for special handling
                                 main_ex_obj = get_ex_by_name(d['primary'])
                                 tags = main_ex_obj.get("tags", [])
                                 pattern = main_ex_obj.get("pattern", "None")
                                 
+                                # TIME / DISTANCE LOGIC (Carry checked first: carry exercises are
+                                # also tagged "Core", so the Core branch must not shadow Carry)
                                 if pattern == "Carry" or "Carry" in tags:
                                     base_sch = tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m")
                                 elif "Iso" in tags or "Core" in tags or pattern == "Core":
                                     base_sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
                                 else:
+                                    # Standard Reps
                                     base_sch = tier_defaults.get(phase_input, {}).get(t, "3 Sets")
                                 
                                 offset = st.session_state.accessory_progression.get(t, 0)
@@ -673,9 +674,9 @@ with tab_builder:
                                     aux_pattern = aux_obj.get("pattern", "None")
                                     
                                     aux_sch = sch # Default to matching the main lift
+                                    aux_offset = st.session_state.accessory_progression.get(t, 0)
                                     
                                     # If Aux is Core/Iso/Carry, give it time/distance instead of reps
-                                    aux_offset = st.session_state.accessory_progression.get(t, 0)
                                     if aux_pattern == "Carry" or "Carry" in aux_tags:
                                         aux_sch = apply_progression(tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m"), aux_offset)
                                     elif "Iso" in aux_tags or "Core" in aux_tags or aux_pattern == "Core":
