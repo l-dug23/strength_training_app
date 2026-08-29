@@ -631,12 +631,11 @@ with tab_builder:
                                 pattern = main_ex_obj.get("pattern", "None")
                                 
                                 # TIME / DISTANCE LOGIC
-                                if "Iso" in tags or "Core" in tags or pattern == "Core":
-                                    sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
-                                elif pattern == "Carry" or "Carry" in tags:
+                                if pattern == "Carry" or "Carry" in tags:
                                     sch = tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m")
+                                elif "Iso" in tags or "Core" in tags or pattern == "Core":
+                                    sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
                                 else:
-                                    # Standard Reps
                                     sch = tier_defaults.get(phase_input, {}).get(t, "3 Sets")
 
                             # --- 2. WRITE TO PROGRAM ---
@@ -656,10 +655,10 @@ with tab_builder:
                                     aux_sch = sch # Default to matching the main lift
                                     
                                     # If Aux is Core/Iso/Carry, give it time/distance instead of reps
-                                    if "Iso" in aux_tags or "Core" in aux_tags or aux_pattern == "Core":
-                                        aux_sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
-                                    elif aux_pattern == "Carry":
+                                    if aux_pattern == "Carry" or "Carry" in aux_tags:
                                         aux_sch = tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m")
+                                    elif "Iso" in aux_tags or "Core" in aux_tags or aux_pattern == "Core":
+                                        aux_sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
                                         
                                     prog.append(f"  {t}{let}: {aux.ljust(22)} | {aux_sch}")
                             else:
