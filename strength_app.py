@@ -195,10 +195,13 @@ def save_protocols(data):
 master_exercises, t1_schemes = load_data()
 
 # --- 4. SESSION STATE INIT ---
+# --- 4. SESSION STATE INIT ---
 if 'cycle_count' not in st.session_state: st.session_state.cycle_count = 1
 if 'previous_t1' not in st.session_state: st.session_state.previous_t1 = None
 if 'history_text' not in st.session_state: st.session_state.history_text = [] 
 if 'draft_plan' not in st.session_state: st.session_state.draft_plan = None
+if 'accessory_progression' not in st.session_state:
+    st.session_state.accessory_progression = {"T2": 0, "T3": 0, "T4": 0}
 
 # --- 5. STATIC DEFINITIONS ---
 style_map = {
@@ -330,6 +333,20 @@ def calculate_weight(protocol_str, one_rm, tm_percentage=100, rounding=2.5):
     if not one_rm: return protocol_str
     tm = one_rm * (tm_percentage / 100.0)
 
+def apply_progression(scheme_str, offset):
+    """Shift the rep/time/distance number in a T2-T4 scheme string by `offset`
+    reps, leaving sets and any suffix untouched. Never drops below 1."""
+    if offset == 0:
+        return scheme_str
+
+    def replacer(match):
+        sets = match.group(1)
+        reps = int(match.group(2))
+        new_reps = max(1, reps + offset)
+        return f"{sets}x{new_reps}"
+
+    return re.sub(r'(\d+)\s*x\s*(\d+)', replacer, scheme_str, count=1)
+
     def replace_group(match):
         nums = re.findall(r"\d+(?:\.\d+)?", match.group(0))
         out = []
@@ -364,6 +381,8 @@ with tab_builder:
     with col_l:
         st.subheader("1. Configuration")
         st.caption(f"Cycle #{st.session_state.cycle_count}")
+        prog = st.session_state.accessory_progression
+        st.caption(f"Accessory volume offset — T2: {prog['T2']:+d} | T3: {prog['T3']:+d} | T4: {prog['T4']:+d}")
         
         user_level = st.selectbox("Athlete Level", [1, 2, 3], index=1)
         phase_input = st.selectbox("Phase", ["Accumulation", "Intensification", "Realisation"])
@@ -624,19 +643,20 @@ with tab_builder:
                                         sch = "3x5"
                             
                             # T2/T3/T4 Logic (Default Based)
-                            else:
-                                # Check the MAIN exercise for special handling
+                                else:
                                 main_ex_obj = get_ex_by_name(d['primary'])
                                 tags = main_ex_obj.get("tags", [])
                                 pattern = main_ex_obj.get("pattern", "None")
                                 
-                                # TIME / DISTANCE LOGIC
                                 if pattern == "Carry" or "Carry" in tags:
-                                    sch = tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m")
+                                    base_sch = tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m")
                                 elif "Iso" in tags or "Core" in tags or pattern == "Core":
-                                    sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
+                                    base_sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
                                 else:
-                                    sch = tier_defaults.get(phase_input, {}).get(t, "3 Sets")
+                                    base_sch = tier_defaults.get(phase_input, {}).get(t, "3 Sets")
+                                
+                                offset = st.session_state.accessory_progression.get(t, 0)
+                                sch = apply_progression(base_sch, offset)
 
                             # --- 2. WRITE TO PROGRAM ---
                             if d["aux_list"]:
@@ -655,10 +675,11 @@ with tab_builder:
                                     aux_sch = sch # Default to matching the main lift
                                     
                                     # If Aux is Core/Iso/Carry, give it time/distance instead of reps
+                                    aux_offset = st.session_state.accessory_progression.get(t, 0)
                                     if aux_pattern == "Carry" or "Carry" in aux_tags:
-                                        aux_sch = tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m")
+                                        aux_sch = apply_progression(tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m"), aux_offset)
                                     elif "Iso" in aux_tags or "Core" in aux_tags or aux_pattern == "Core":
-                                        aux_sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
+                                        aux_sch = apply_progression(tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s"), aux_offset)
                                         
                                     prog.append(f"  {t}{let}: {aux.ljust(22)} | {aux_sch}")
                             else:
@@ -667,6 +688,13 @@ with tab_builder:
                 st.session_state.history_text.append("\n".join(prog))
                 st.session_state.previous_t1 = curr_t1s
                 st.session_state.cycle_count += 1
+
+                # Progress T2/T3/T4 volume for the NEXT block built:
+                # Accumulation -> reps go up next time, Intensification/Realisation -> reps go down
+                direction = 1 if phase_input == "Accumulation" else -1
+                for tier_key in ["T2", "T3", "T4"]:
+                    st.session_state.accessory_progression[tier_key] += direction
+
                 st.session_state.draft_plan = None
                 st.success("Program Built! Scroll down to History.")
                 st.rerun()
