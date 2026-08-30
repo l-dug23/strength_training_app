@@ -3,17 +3,16 @@ import streamlit as st
 st.set_page_config(page_title="Conditioning Session Builder", page_icon="🏃")
 
 # --- 1. TEST -> MAS / ASR CALCULATIONS ---
-def calc_mas_from_1200m(time_seconds):
-    """MAS (Maximal Aerobic Speed) in m/s from a 1200m time trial."""
-    if not time_seconds or time_seconds <= 0:
+def calc_mas(distance_m, time_seconds):
+    """MAS (Maximal Aerobic Speed) in m/s from any distance/time time trial."""
+    if not distance_m or distance_m <= 0 or not time_seconds or time_seconds <= 0:
         return None
-    return 1200 / time_seconds
+    return distance_m / time_seconds
 
-def calc_asr(mas_ms, max_speed_kmh):
-    """ASR (Anaerobic Speed Reserve) = max sprint speed - MAS, both in m/s."""
-    if not mas_ms or not max_speed_kmh or max_speed_kmh <= 0:
+def calc_asr(mas_ms, max_speed_ms):
+    """ASR (Anaerobic Speed Reserve) = max sprint speed - MAS, both already in m/s."""
+    if not mas_ms or not max_speed_ms or max_speed_ms <= 0:
         return None, None
-    max_speed_ms = max_speed_kmh / 3.6
     return max_speed_ms - mas_ms, max_speed_ms
 
 def speed_to_kmh(speed_ms):
@@ -151,21 +150,26 @@ with tab_builder:
 
     st.subheader("1. Test Result")
 
-    test_type = st.selectbox("Test Type", ["1200m Time Trial"])
-    st.caption("More test types can be added later — this is the first one wired up.")
+    test_type = st.selectbox("Test Type", ["Distance/Time Trial", "Direct MAS Entry"])
+    st.caption("Distance/Time Trial covers any fixed-distance test (1200m, 2000m, 5min TT, etc). "
+               "More specific named tests (30-15IFT, VAM-Eval, etc.) can be added later.")
 
-    c1, c2 = st.columns(2)
-    test_min = c1.number_input("1200m time — minutes", min_value=0, max_value=15, value=4, step=1)
-    test_sec = c2.number_input("1200m time — seconds", min_value=0, max_value=59, value=0, step=1)
-    test_time_s = test_min * 60 + test_sec
-    mas_ms = calc_mas_from_1200m(test_time_s)
+    if test_type == "Distance/Time Trial":
+        c1, c2, c3 = st.columns(3)
+        test_distance_m = c1.number_input("Distance (m)", min_value=50, value=1200, step=50)
+        test_min = c2.number_input("Time — minutes", min_value=0, max_value=30, value=4, step=1)
+        test_sec = c3.number_input("Time — seconds", min_value=0, max_value=59, value=0, step=1)
+        test_time_s = test_min * 60 + test_sec
+        mas_ms = calc_mas(test_distance_m, test_time_s)
+    else:  # Direct MAS Entry
+        mas_ms = st.number_input("MAS (m/s)", min_value=0.0, value=5.0, step=0.05)
 
-    max_speed_kmh = st.number_input(
-        "Max Sprint Speed (km/h) — from a flying sprint test",
-        min_value=0.0, value=0.0, step=0.1,
+    max_speed_ms = st.number_input(
+        "Max Sprint Speed (m/s) — from a flying sprint test",
+        min_value=0.0, value=0.0, step=0.05,
         help="Used for %ASR intensities (Repeatability work). Leave at 0 if not needed."
     )
-    asr_ms, vmax_ms = calc_asr(mas_ms, max_speed_kmh)
+    asr_ms, vmax_ms = calc_asr(mas_ms, max_speed_ms)
 
     if mas_ms:
         summary = (
@@ -174,7 +178,7 @@ with tab_builder:
         )
         if asr_ms is not None:
             summary += (
-                f"  \nMax Speed: **{vmax_ms:.2f} m/s** ({max_speed_kmh:.1f} km/h) | "
+                f"  \nMax Speed: **{vmax_ms:.2f} m/s** ({speed_to_kmh(vmax_ms):.1f} km/h) | "
                 f"ASR: **{asr_ms:.2f} m/s** ({speed_to_kmh(asr_ms):.1f} km/h)"
             )
         st.success(summary)
@@ -236,7 +240,7 @@ with tab_builder:
                 ]
                 if asr_ms is not None:
                     header.append(
-                        f"Max Speed: {vmax_ms:.2f} m/s ({max_speed_kmh:.1f} km/h) | "
+                        f"Max Speed: {vmax_ms:.2f} m/s ({speed_to_kmh(vmax_ms):.1f} km/h) | "
                         f"ASR: {asr_ms:.2f} m/s ({speed_to_kmh(asr_ms):.1f} km/h)"
                     )
                 header.append("=" * 60)
