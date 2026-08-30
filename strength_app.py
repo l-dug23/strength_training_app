@@ -57,6 +57,26 @@ DEFAULT_EXERCISES = [
     {"name": "Trap Bar Jump", "level": 2, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Speed-Strength", "tags": ["Plyo", "Power"]},
     {"name": "Weighted Box Jump", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Speed-Strength", "tags": ["Plyo", "Power"]},
 
+    # Level 1 (true intro/reactive work — previously only Box Jump existed at this level)
+    {"name": "Pogo Hops", "level": 1, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive"]},
+    {"name": "Ankle Bounds", "level": 1, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive"]},
+    {"name": "Single Leg Pogo Hops", "level": 1, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive", "Unilateral"]},
+
+    # Level 2 (unilateral + multi-directional — frontal/lateral plane was entirely absent)
+    {"name": "Single Leg Broad Jump", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral"]},
+    {"name": "Skater Bound", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Frontal Plane"]},
+    {"name": "Lateral Hurdle Hops", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Frontal Plane"]},
+
+    # Level 3 (advanced reactive/unilateral — previously only Depth Jump existed at this level)
+    {"name": "Single Leg Depth Jump", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Reactive"]},
+    {"name": "Bounding", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Horizontal"]},
+    {"name": "Depth Jump to Broad Jump", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Complex"]},
+
+    # Strength-Speed zone (previously empty — you had Speed-Strength covered but nothing heavier-loaded)
+    {"name": "Weighted Depth Jump", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Power"]},
+    {"name": "Loaded Skater Bound", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Unilateral", "Power"]},
+
+    
     # --- LOWER BODY: PRIMARY ---
     {"name": "Goblet Squat", "level": 1, "tier": "Lower Body", "type": "Primary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Knee Ext"]},
     {"name": "Front Squat", "level": 3, "tier": "Lower Body", "type": "Primary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Knee Ext"]},
@@ -71,6 +91,29 @@ DEFAULT_EXERCISES = [
     {"name": "BW Step Ups", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
     {"name": "Loaded Step Ups", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
     {"name": "High Box Step Ups", "level": 3, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
+
+    # Unilateral squat pattern (previously zero coverage)
+    {"name": "Assisted Pistol Squat", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
+    {"name": "Pistol Squat to Box", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
+    {"name": "Pistol Squat", "level": 3, "tier": "Lower Body", "type": "Primary", "pattern": "Squat", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
+
+    # Frontal-plane movement (previously zero coverage — all existing lunges are sagittal)
+    {"name": "Cossack Squat", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Adductor", "Frontal Plane"]},
+    {"name": "Loaded Lateral Lunge", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Frontal Plane"]},
+
+    # Velocity-zone squat work (previously zero coverage outside Plyo tier)
+    {"name": "Bodyweight Jump Squat", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Quad Dom", "Plyo"]},
+    {"name": "Banded Speed Squat", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Speed-Strength", "tags": ["Quad Dom", "Accommodating Resistance"]},
+    {"name": "Loaded Jump Squat", "level": 2, "tier": "Lower Body", "type": "Primary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Strength-Speed", "tags": ["Quad Dom", "Power"]},
+
+    # Velocity-zone lunge work
+    {"name": "Alternating Jump Lunge", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Quad Dom", "Plyo", "Unilateral"]},
+    {"name": "Loaded Split Squat Jump", "level": 3, "tier": "Lower Body", "type": "Primary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Strength-Speed", "tags": ["Quad Dom", "Power", "Unilateral"]},
+
+    # Hypertrophy-zone options (previously zero coverage)
+    {"name": "Walking Lunge", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Quad Dom", "Unilateral"]},
+    {"name": "Bulgarian Split Squat", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Quad Dom", "Unilateral"]},
+    {"name": "Heels-Elevated Goblet Squat", "level": 1, "tier": "Lower Body", "type": "Auxiliary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Quad Dom"]},
 
     # --- UPPER BODY: PRIMARY ---
     {"name": "Push Ups", "level": 2, "tier": "Upper Body", "type": "Primary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["UB Push", "Horizontal"]},
@@ -94,6 +137,25 @@ DEFAULT_EXERCISES = [
     {"name": "Chest Supported Row", "level": 1, "tier": "Upper Body", "type": "Secondary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["UB Pull", "Horizontal"]},
     {"name": "Seated Cable Row", "level": 1, "tier": "Upper Body", "type": "Secondary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["UB Pull", "Horizontal"]},
     {"name": "Lat Pulldown", "level": 1, "tier": "Upper Body", "type": "Secondary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["UB Pull", "Vertical"]},
+
+    # Level 1 (true intro/reactive work — previously only Box Jump existed at this level)
+    {"name": "Pogo Hops", "level": 1, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive"]},
+    {"name": "Ankle Bounds", "level": 1, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive"]},
+    {"name": "Single Leg Pogo Hops", "level": 1, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive", "Unilateral"]},
+
+    # Level 2 (unilateral + multi-directional — frontal/lateral plane was entirely absent)
+    {"name": "Single Leg Broad Jump", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral"]},
+    {"name": "Skater Bound", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Frontal Plane"]},
+    {"name": "Lateral Hurdle Hops", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Frontal Plane"]},
+
+    # Level 3 (advanced reactive/unilateral — previously only Depth Jump existed at this level)
+    {"name": "Single Leg Depth Jump", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Reactive"]},
+    {"name": "Bounding", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Horizontal"]},
+    {"name": "Depth Jump to Broad Jump", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Complex"]},
+
+    # Strength-Speed zone (previously empty — you had Speed-Strength covered but nothing heavier-loaded)
+    {"name": "Weighted Depth Jump", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Power"]},
+    {"name": "Loaded Skater Bound", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Unilateral", "Power"]},
 
     # --- ISO & ACCESSORY (Auxiliary) ---
     {"name": "Bicep Curl", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Arm"]},
