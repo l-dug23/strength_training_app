@@ -157,6 +157,37 @@ DEFAULT_EXERCISES = [
     {"name": "Weighted Depth Jump", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Power"]},
     {"name": "Loaded Skater Bound", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Unilateral", "Power"]},
 
+    # Progressions for previously single-level exercises
+    {"name": "Single Leg Calf Raise", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Calf", "Unilateral"]},
+    {"name": "Weighted Calf Raise", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Calf"]},
+
+    {"name": "Copenhagen Plank", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Adductor", "Unilateral"]},
+    {"name": "Standing Cable Adduction", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Adductor", "Unilateral"]},
+
+    {"name": "Cable Lateral Raise", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
+    {"name": "Leaning Single Arm Lateral Raise", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder", "Unilateral"]},
+
+    {"name": "Band Reverse Fly", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
+    {"name": "Prone Y-T-W Raise", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
+
+    {"name": "Cable Face Pull", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
+    {"name": "High-to-Low Face Pull", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
+
+    # Lateral Core (previously 1 exercise: Kneeling Side Plank)
+    {"name": "Side Plank", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"]},
+    {"name": "Weighted Side Plank", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"]},
+    {"name": "Suitcase Hold", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Carry", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"]},
+
+    # Rotational Core (previously 1 exercise: Band Rotations)
+    {"name": "Half-Kneeling Cable Chop", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"]},
+    {"name": "Standing Cable Woodchop", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"]},
+    {"name": "Med Ball Rotational Throw", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Iso", "Rotational Core", "Explosive"]},
+
+    # Quad isolation (previously absent)
+    {"name": "Leg Extension", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Quad Dom"]},
+    {"name": "Sissy Squat", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Quad Dom"]},
+
+
     # --- ISO & ACCESSORY (Auxiliary) ---
     {"name": "Bicep Curl", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Arm"]},
     {"name": "Tricep Extension", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Arm"]},
