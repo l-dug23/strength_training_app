@@ -1,5 +1,4 @@
 import streamlit as st
-import re
 
 st.set_page_config(page_title="Conditioning Session Builder", page_icon="🏃")
 
@@ -11,8 +10,7 @@ def calc_mas_from_1200m(time_seconds):
     return 1200 / time_seconds
 
 def calc_asr(mas_ms, max_speed_kmh):
-    """ASR (Anaerobic Speed Reserve) = max sprint speed - MAS, both in m/s.
-    Returns (asr_ms, max_speed_ms) or (None, None) if inputs are missing."""
+    """ASR (Anaerobic Speed Reserve) = max sprint speed - MAS, both in m/s."""
     if not mas_ms or not max_speed_kmh or max_speed_kmh <= 0:
         return None, None
     max_speed_ms = max_speed_kmh / 3.6
@@ -22,7 +20,6 @@ def speed_to_kmh(speed_ms):
     return speed_ms * 3.6
 
 def speed_to_pace_per_km(speed_ms):
-    """Pace as mm:ss per km for a given speed in m/s."""
     if not speed_ms or speed_ms <= 0:
         return "-"
     sec_per_km = 1000 / speed_ms
@@ -33,74 +30,109 @@ def speed_to_pace_per_km(speed_ms):
         secs = 0
     return f"{mins}:{secs:02d}/km"
 
-def apply_targets(protocol_str, mas_ms, asr_ms):
-    """Replace N%MAS with the equivalent MAS-based pace (use up to ~120%),
-    and N%ASR with the equivalent Anaerobic-Speed-Reserve-based pace
-    (MAS + %ASR * ASR) for supramaximal/sprint-repeat work."""
+def get_target_speed(mas_ms, asr_ms, intensity_type, pct):
+    """Speed in m/s for a given %MAS or %ASR intensity."""
+    if intensity_type == "MAS":
+        return mas_ms * (pct / 100.0) if mas_ms else None
+    else:  # ASR
+        if mas_ms is None or asr_ms is None:
+            return None
+        return mas_ms + (pct / 100.0) * asr_ms
 
-    def mas_replacer(match):
-        pct = float(match.group(1))
-        if not mas_ms:
-            return "-"
-        return speed_to_pace_per_km(mas_ms * (pct / 100.0))
+def fmt_duration(seconds):
+    seconds = round(seconds)
+    if seconds < 60:
+        return f"{seconds}s"
+    m, s = divmod(seconds, 60)
+    return f"{m}:{s:02d}"
 
-    def asr_replacer(match):
-        pct = float(match.group(1))
-        if not mas_ms or asr_ms is None:
-            return "-"
-        return speed_to_pace_per_km(mas_ms + (pct / 100.0) * asr_ms)
+def fmt_distance(metres):
+    return f"{round(metres / 5) * 5}m"  # round to nearest 5m
 
-    text = re.sub(r"(\d+(?:\.\d+)?)%MAS", mas_replacer, protocol_str)
-    text = re.sub(r"(\d+(?:\.\d+)?)%ASR", asr_replacer, text)
-    return text
+# --- 2. WEEK PROGRESSION ---
+WEEK_FLOW = ["Base", "Load 1", "Load 2", "Perform"]
 
-def protocol_needs_asr(protocol_dict):
-    """Check whether any week in a protocol uses %ASR, so we know whether
-    to require a max-speed input before building."""
-    return any("%ASR" in v for v in protocol_dict.values())
+def build_week_values(base, progression_variable, step):
+    """Apply a per-week step to exactly one of reps / effort_value / intensity_pct,
+    holding the other two fixed at their base value."""
+    out = []
+    for i, wk in enumerate(WEEK_FLOW):
+        reps = base["reps"]
+        effort = base["effort_value"]
+        intensity = base["intensity_pct"]
+        if progression_variable == "Reps/Sets":
+            reps = base["reps"] + i * step
+        elif progression_variable == "Volume/Duration":
+            effort = base["effort_value"] + i * step
+        elif progression_variable == "Intensity":
+            intensity = base["intensity_pct"] + i * step
+        out.append({"week": wk, "reps": max(1, int(round(reps))), "effort_value": max(0.1, effort), "intensity_pct": intensity})
+    return out
 
-# --- 2. SESSION STATE ---
+def render_session(protocol, metric_mode, progression_variable, step, mas_ms, asr_ms):
+    """Build the full week-by-week text block for a protocol."""
+    base_speed = get_target_speed(mas_ms, asr_ms, protocol["intensity_type"], protocol["intensity_pct"])
+    if metric_mode == "Time":
+        base_effort_value = protocol["effort_s"]
+    else:  # Distance - derive once from the protocol's base duration x base intensity speed
+        base_effort_value = protocol["effort_s"] * base_speed
+
+    base = {"reps": protocol["reps"], "effort_value": base_effort_value, "intensity_pct": protocol["intensity_pct"]}
+    weeks = build_week_values(base, progression_variable, step)
+
+    lines = []
+    for w in weeks:
+        speed = get_target_speed(mas_ms, asr_ms, protocol["intensity_type"], w["intensity_pct"])
+        if speed is None:
+            lines.append(f"\nWEEK: {w['week'].upper()}\n" + "-" * 30)
+            lines.append("  Missing MAS/ASR input for this intensity.")
+            continue
+        if metric_mode == "Time":
+            duration_s = w["effort_value"]
+            distance_m = duration_s * speed
+            main, companion, companion_label = fmt_duration(duration_s), fmt_distance(distance_m), "≈ distance"
+        else:
+            distance_m = w["effort_value"]
+            duration_s = distance_m / speed
+            main, companion, companion_label = fmt_distance(distance_m), fmt_duration(duration_s), "≈ time"
+        lines.append(f"\nWEEK: {w['week'].upper()}\n" + "-" * 30)
+        lines.append(
+            f"  {w['reps']} x {main} ({companion_label}: {companion}) "
+            f"@ {w['intensity_pct']:.1f}% {protocol['intensity_type']} "
+            f"({speed_to_pace_per_km(speed)}) | rest {protocol['rest_s']}s"
+        )
+    return "\n".join(lines)
+
+# --- 3. SESSION STATE ---
 if 'cond_history' not in st.session_state:
     st.session_state.cond_history = []
 
-# --- 3. DEFAULT PROTOCOL LIBRARY ---
-# PLACEHOLDER CONTENT: structural examples only, in the same shape as the
-# strength app's protocol library (programme type -> named protocol -> week
-# -> prescription). Replace these with your own prescriptions before using
-# this for real programming.
-#
-# Use "%MAS" for intensities up to ~120% MAS, and "%ASR" for supramaximal /
-# short sprint-repeat work above that (Anaerobic Speed Reserve method).
+# --- 4. DEFAULT PROTOCOL LIBRARY ---
+# PLACEHOLDER CONTENT: structural examples only. Each protocol is defined by a
+# single base prescription (reps, effort duration in seconds, rest in seconds,
+# intensity type/%). The week-by-week plan is generated at build time from
+# whichever variable is chosen to progress (Reps/Sets, Volume/Duration, or
+# Intensity) and whichever unit (Time or Distance) is chosen to plan off.
+# Replace these with your own prescriptions before using this for real programming.
 RUNNING_PROTOCOLS = {
     "Capacity": {
-        "Long_Intervals": {
-            "Base":    "6 x 3min @ 85%MAS, 90s rec",
-            "Load 1":  "6 x 3min @ 88%MAS, 75s rec",
-            "Load 2":  "7 x 3min @ 90%MAS, 75s rec",
-            "Perform": "8 x 3min @ 90%MAS, 60s rec",
-        },
+        "Long_Intervals": {"reps": 6, "effort_s": 180, "rest_s": 90, "intensity_type": "MAS", "intensity_pct": 85},
     },
     "Output": {
-        "VO2max_Reps": {
-            "Base":    "8 x 90s @ 100%MAS, 90s rec",
-            "Load 1":  "8 x 90s @ 105%MAS, 75s rec",
-            "Load 2":  "10 x 90s @ 110%MAS, 75s rec",
-            "Perform": "10 x 90s @ 115%MAS, 60s rec",
-        },
+        "VO2max_Reps": {"reps": 8, "effort_s": 90, "rest_s": 90, "intensity_type": "MAS", "intensity_pct": 100},
     },
     "Repeatability": {
-        "Short_Rep_Sprint": {
-            "Base":    "10 x 6s @ 30%ASR, 24s rec",
-            "Load 1":  "10 x 6s @ 35%ASR, 24s rec",
-            "Load 2":  "12 x 6s @ 40%ASR, 20s rec",
-            "Perform": "12 x 6s @ 45%ASR, 20s rec",
-        },
+        "Short_Rep_Sprint": {"reps": 10, "effort_s": 6, "rest_s": 24, "intensity_type": "ASR", "intensity_pct": 30},
     },
 }
 
-WEEK_FLOW = ["Base", "Load 1", "Load 2", "Perform"]
+PROGRESSION_STEP_LABELS = {
+    "Reps/Sets": "Step (extra reps per week)",
+    "Volume/Duration": None,  # set dynamically below based on metric_mode
+    "Intensity": "Step (extra % per week)",
+}
 
-# --- 4. UI ---
+# --- 5. UI ---
 st.title("🏃 Conditioning Session Builder")
 
 mode = st.selectbox("Mode", ["Running", "Cycling", "Rowing", "Ski Erg"])
@@ -128,8 +160,7 @@ mas_ms = calc_mas_from_1200m(test_time_s)
 max_speed_kmh = st.number_input(
     "Max Sprint Speed (km/h) — from a flying sprint test",
     min_value=0.0, value=0.0, step=0.1,
-    help="Used for %ASR intensities above ~120% MAS (e.g. short sprint-repeat reps). "
-         "Leave at 0 if not building a Repeatability session yet."
+    help="Used for %ASR intensities (Repeatability work). Leave at 0 if not needed."
 )
 asr_ms, vmax_ms = calc_asr(mas_ms, max_speed_kmh)
 
@@ -152,11 +183,37 @@ avail_protocols = list(RUNNING_PROTOCOLS.get(prog_type, {}).keys())
 protocol_choice = st.selectbox("Protocol", avail_protocols) if avail_protocols else None
 
 if protocol_choice:
-    raw = RUNNING_PROTOCOLS[prog_type][protocol_choice]
-    with st.expander("Preview raw protocol (before conversion)"):
-        st.json(raw)
-    if protocol_needs_asr(raw) and not asr_ms:
-        st.warning("This protocol uses %ASR intensities — enter a max sprint speed above to build it.")
+    protocol = RUNNING_PROTOCOLS[prog_type][protocol_choice]
+    with st.expander("Preview base prescription (Week 1, before progression)"):
+        st.json(protocol)
+    if protocol["intensity_type"] == "ASR" and not asr_ms:
+        st.warning("This protocol uses %ASR — enter a max sprint speed above to build it.")
+
+st.divider()
+st.subheader("3. Plan & Progression")
+
+metric_mode = st.radio(
+    "Plan sessions by",
+    ["Time", "Distance"],
+    horizontal=True,
+    help="Time: fix the effort duration, the app tells you the distance that covers. "
+         "Distance: fix the effort distance, the app tells you the time it should take."
+)
+
+progression_variable = st.selectbox(
+    "Progress each week by",
+    ["Intensity", "Reps/Sets", "Volume/Duration"],
+    help="Whichever variable you pick here changes week to week (Base -> Load 1 -> Load 2 -> Perform); "
+         "the other two stay fixed at the base prescription."
+)
+
+if progression_variable == "Reps/Sets":
+    step = st.number_input("Step — extra reps per week", min_value=0, value=1, step=1)
+elif progression_variable == "Intensity":
+    step = st.number_input("Step — extra % per week", min_value=0.0, value=3.0, step=0.5)
+else:  # Volume/Duration
+    unit_label = "seconds" if metric_mode == "Time" else "metres"
+    step = st.number_input(f"Step — extra {unit_label} per week", min_value=0.0, value=15.0 if metric_mode == "Time" else 50.0, step=5.0)
 
 st.divider()
 if st.button("🎯 Build Conditioning Session", type="primary"):
@@ -165,26 +222,23 @@ if st.button("🎯 Build Conditioning Session", type="primary"):
     elif not protocol_choice:
         st.error(f"No protocols defined yet for {prog_type}.")
     else:
-        raw = RUNNING_PROTOCOLS[prog_type][protocol_choice]
-        if protocol_needs_asr(raw) and not asr_ms:
+        protocol = RUNNING_PROTOCOLS[prog_type][protocol_choice]
+        if protocol["intensity_type"] == "ASR" and not asr_ms:
             st.error("This protocol needs a max sprint speed to calculate %ASR targets.")
         else:
-            lines = [
+            header = [
                 f"CONDITIONING BLOCK: {mode} | {prog_type} ({protocol_choice})",
+                f"Plan by: {metric_mode} | Progressing: {progression_variable} (step {step})",
                 f"MAS: {mas_ms:.2f} m/s ({speed_to_kmh(mas_ms):.1f} km/h, {speed_to_pace_per_km(mas_ms)})",
             ]
             if asr_ms is not None:
-                lines.append(
+                header.append(
                     f"Max Speed: {vmax_ms:.2f} m/s ({max_speed_kmh:.1f} km/h) | "
                     f"ASR: {asr_ms:.2f} m/s ({speed_to_kmh(asr_ms):.1f} km/h)"
                 )
-            lines.append("=" * 60)
-            for wk in WEEK_FLOW:
-                if wk in raw:
-                    target = apply_targets(raw[wk], mas_ms, asr_ms)
-                    lines.append(f"\nWEEK: {wk.upper()}\n" + "-" * 30)
-                    lines.append(f"  {target}")
-            session_text = "\n".join(lines)
+            header.append("=" * 60)
+            body = render_session(protocol, metric_mode, progression_variable, step, mas_ms, asr_ms)
+            session_text = "\n".join(header) + body
             st.session_state.cond_history.append(session_text)
             st.success("Session built — see below.")
 
