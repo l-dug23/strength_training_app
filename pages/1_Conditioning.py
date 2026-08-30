@@ -49,26 +49,36 @@ def fmt_distance(metres):
     return f"{round(metres / 5) * 5}m"  # round to nearest 5m
 
 # --- 2. WEEK PROGRESSION ---
-WEEK_FLOW = ["Base", "Load 1", "Load 2", "Perform"]
+# Each week is (label, step_index). step_index is what actually drives the
+# linear progression (base + step_index * step) - it is NOT just the week's
+# position in the list. De-Re-Load and De-load reuse step_index 0, the same
+# as Base, so those weeks come out very similar to the Base prescription
+# rather than continuing to climb.
+WEEK_FLOWS = {
+    3: [("Load 1", 0), ("Load 2", 1), ("Perform", 2)],
+    4: [("Base", 0), ("Load 1", 1), ("Load 2", 2), ("Perform", 3)],
+    6: [("Base", 0), ("Load 1", 1), ("Load 2", 2), ("De-Re-Load", 0), ("Perform", 3), ("De-load", 0)],
+}
 
-def build_week_values(base, progression_variable, step):
+def build_week_values(base, progression_variable, step, week_flow):
     """Apply a per-week step to exactly one of reps / effort_value / intensity_pct,
-    holding the other two fixed at their base value."""
+    holding the other two fixed at their base value. Each week's step_index
+    (not its position) determines how far along the progression it sits."""
     out = []
-    for i, wk in enumerate(WEEK_FLOW):
+    for wk, step_index in week_flow:
         reps = base["reps"]
         effort = base["effort_value"]
         intensity = base["intensity_pct"]
         if progression_variable == "Reps/Sets":
-            reps = base["reps"] + i * step
+            reps = base["reps"] + step_index * step
         elif progression_variable == "Volume/Duration":
-            effort = base["effort_value"] + i * step
+            effort = base["effort_value"] + step_index * step
         elif progression_variable == "Intensity":
-            intensity = base["intensity_pct"] + i * step
+            intensity = base["intensity_pct"] + step_index * step
         out.append({"week": wk, "reps": max(1, int(round(reps))), "effort_value": max(0.1, effort), "intensity_pct": intensity})
     return out
 
-def render_session(protocol, metric_mode, progression_variable, step, mas_ms, asr_ms):
+def render_session(protocol, metric_mode, progression_variable, step, mas_ms, asr_ms, week_flow):
     """Build the full week-by-week text block for a protocol."""
     base_speed = get_target_speed(mas_ms, asr_ms, protocol["intensity_type"], protocol["intensity_pct"])
     if metric_mode == "Time":
@@ -77,7 +87,7 @@ def render_session(protocol, metric_mode, progression_variable, step, mas_ms, as
         base_effort_value = protocol["effort_s"] * base_speed
 
     base = {"reps": protocol["reps"], "effort_value": base_effort_value, "intensity_pct": protocol["intensity_pct"]}
-    weeks = build_week_values(base, progression_variable, step)
+    weeks = build_week_values(base, progression_variable, step, week_flow)
 
     lines = []
     for w in weeks:
@@ -199,6 +209,9 @@ with tab_builder:
     st.divider()
     st.subheader("3. Plan & Progression")
 
+    duration_weeks = st.selectbox("Duration (weeks)", [3, 4, 6], index=1)
+    week_flow = WEEK_FLOWS[duration_weeks]
+
     metric_mode = st.radio(
         "Plan sessions by",
         ["Time", "Distance"],
@@ -210,7 +223,8 @@ with tab_builder:
     progression_variable = st.selectbox(
         "Progress each week by",
         ["Intensity", "Reps/Sets", "Volume/Duration"],
-        help="Whichever variable you pick here changes week to week (Base -> Load 1 -> Load 2 -> Perform); "
+        help=f"Whichever variable you pick here changes week to week "
+             f"({' -> '.join(label for label, _ in week_flow)}); "
              "the other two stay fixed at the base prescription."
     )
 
@@ -244,7 +258,7 @@ with tab_builder:
                         f"ASR: {asr_ms:.2f} m/s ({speed_to_kmh(asr_ms):.1f} km/h)"
                     )
                 header.append("=" * 60)
-                body = render_session(protocol, metric_mode, progression_variable, step, mas_ms, asr_ms)
+                body = render_session(protocol, metric_mode, progression_variable, step, mas_ms, asr_ms, week_flow)
                 session_text = "\n".join(header) + body
                 st.session_state.cond_history.append(session_text)
                 st.success("Session built — see below.")
