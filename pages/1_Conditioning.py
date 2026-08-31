@@ -122,18 +122,31 @@ if 'cond_history' not in st.session_state:
 #   Capacity      -> Long Intervals   (2-5 min work, 1-3 min recovery, ~90-100% MAS)
 #   Output        -> Short Intervals  (10-60s work, <60s recovery, ~100-120% MAS)
 #   Repeatability -> Repeated Sprint Training (3-10s work, <45s recovery, ASR domain)
-# The specific reps/intensity values below are a starting point sitting within
-# those sourced ranges, not verbatim book values (I don't have page-level access
-# to the book itself) — review and adjust before using for real programming.
+# Each category is spread across its full sourced work-duration range, with rest
+# and intensity scaled sensibly within that type's cited window (recovery stays
+# proportionate to effort; intensity trades off against duration - shorter reps
+# within a category run faster than longer ones). These are a starting point
+# sitting within the sourced ranges, not verbatim book values (I don't have
+# page-level access to the book itself) — review and adjust before real use.
 RUNNING_PROTOCOLS = {
     "Capacity": {
-        "Long_Intervals": {"reps": 6, "effort_s": 180, "rest_s": 90, "intensity_type": "MAS", "intensity_pct": 92},
+        "Long_Intervals_2min": {"reps": 8, "effort_s": 120, "rest_s": 60,  "intensity_type": "MAS", "intensity_pct": 95},
+        "Long_Intervals_3min": {"reps": 6, "effort_s": 180, "rest_s": 90,  "intensity_type": "MAS", "intensity_pct": 92},
+        "Long_Intervals_4min": {"reps": 5, "effort_s": 240, "rest_s": 120, "intensity_type": "MAS", "intensity_pct": 90},
+        "Long_Intervals_5min": {"reps": 4, "effort_s": 300, "rest_s": 150, "intensity_type": "MAS", "intensity_pct": 88},
     },
     "Output": {
-        "Short_Intervals": {"reps": 10, "effort_s": 30, "rest_s": 30, "intensity_type": "MAS", "intensity_pct": 110},
+        "Short_Intervals_15s": {"reps": 16, "effort_s": 15, "rest_s": 15, "intensity_type": "MAS", "intensity_pct": 118},
+        "Short_Intervals_30s": {"reps": 10, "effort_s": 30, "rest_s": 30, "intensity_type": "MAS", "intensity_pct": 110},
+        "Short_Intervals_45s": {"reps": 8,  "effort_s": 45, "rest_s": 45, "intensity_type": "MAS", "intensity_pct": 105},
+        "Short_Intervals_60s": {"reps": 6,  "effort_s": 60, "rest_s": 45, "intensity_type": "MAS", "intensity_pct": 102},
     },
     "Repeatability": {
-        "Repeated_Sprints": {"reps": 10, "effort_s": 6, "rest_s": 24, "intensity_type": "ASR", "intensity_pct": 30},
+        "Repeated_Sprints_3s":  {"reps": 14, "effort_s": 3,  "rest_s": 15, "intensity_type": "ASR", "intensity_pct": 40},
+        "Repeated_Sprints_5s":  {"reps": 12, "effort_s": 5,  "rest_s": 20, "intensity_type": "ASR", "intensity_pct": 35},
+        "Repeated_Sprints_6s":  {"reps": 10, "effort_s": 6,  "rest_s": 24, "intensity_type": "ASR", "intensity_pct": 30},
+        "Repeated_Sprints_8s":  {"reps": 8,  "effort_s": 8,  "rest_s": 30, "intensity_type": "ASR", "intensity_pct": 28},
+        "Repeated_Sprints_10s": {"reps": 6,  "effort_s": 10, "rest_s": 35, "intensity_type": "ASR", "intensity_pct": 25},
     },
 }
 
