@@ -3,6 +3,11 @@ import random
 import json
 import os
 import re
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib.colors as mcolors
+import numpy as np
+from io import BytesIO
 
 # --- 1. CONFIGURATION & FILE MANAGEMENT ---
 APP_VERSION = "v7.0"
@@ -57,26 +62,6 @@ DEFAULT_EXERCISES = [
     {"name": "Trap Bar Jump", "level": 2, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Speed-Strength", "tags": ["Plyo", "Power"]},
     {"name": "Weighted Box Jump", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Speed-Strength", "tags": ["Plyo", "Power"]},
 
-    # Level 1 (true intro/reactive work — previously only Box Jump existed at this level)
-    {"name": "Pogo Hops", "level": 1, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive"]},
-    {"name": "Ankle Bounds", "level": 1, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive"]},
-    {"name": "Single Leg Pogo Hops", "level": 1, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive", "Unilateral"]},
-
-    # Level 2 (unilateral + multi-directional — frontal/lateral plane was entirely absent)
-    {"name": "Single Leg Broad Jump", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral"]},
-    {"name": "Skater Bound", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Frontal Plane"]},
-    {"name": "Lateral Hurdle Hops", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Frontal Plane"]},
-
-    # Level 3 (advanced reactive/unilateral — previously only Depth Jump existed at this level)
-    {"name": "Single Leg Depth Jump", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Reactive"]},
-    {"name": "Bounding", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Horizontal"]},
-    {"name": "Depth Jump to Broad Jump", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Complex"]},
-
-    # Strength-Speed zone (previously empty — you had Speed-Strength covered but nothing heavier-loaded)
-    {"name": "Weighted Depth Jump", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Power"]},
-    {"name": "Loaded Skater Bound", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Unilateral", "Power"]},
-
-    
     # --- LOWER BODY: PRIMARY ---
     {"name": "Goblet Squat", "level": 1, "tier": "Lower Body", "type": "Primary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Knee Ext"]},
     {"name": "Front Squat", "level": 3, "tier": "Lower Body", "type": "Primary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Knee Ext"]},
@@ -91,29 +76,6 @@ DEFAULT_EXERCISES = [
     {"name": "BW Step Ups", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
     {"name": "Loaded Step Ups", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
     {"name": "High Box Step Ups", "level": 3, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
-
-    # Unilateral squat pattern (previously zero coverage)
-    {"name": "Assisted Pistol Squat", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
-    {"name": "Pistol Squat to Box", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
-    {"name": "Pistol Squat", "level": 3, "tier": "Lower Body", "type": "Primary", "pattern": "Squat", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Unilateral"]},
-
-    # Frontal-plane movement (previously zero coverage — all existing lunges are sagittal)
-    {"name": "Cossack Squat", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Adductor", "Frontal Plane"]},
-    {"name": "Loaded Lateral Lunge", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Quad Dom", "Frontal Plane"]},
-
-    # Velocity-zone squat work (previously zero coverage outside Plyo tier)
-    {"name": "Bodyweight Jump Squat", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Quad Dom", "Plyo"]},
-    {"name": "Banded Speed Squat", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Speed-Strength", "tags": ["Quad Dom", "Accommodating Resistance"]},
-    {"name": "Loaded Jump Squat", "level": 2, "tier": "Lower Body", "type": "Primary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Strength-Speed", "tags": ["Quad Dom", "Power"]},
-
-    # Velocity-zone lunge work
-    {"name": "Alternating Jump Lunge", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Quad Dom", "Plyo", "Unilateral"]},
-    {"name": "Loaded Split Squat Jump", "level": 3, "tier": "Lower Body", "type": "Primary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Strength-Speed", "tags": ["Quad Dom", "Power", "Unilateral"]},
-
-    # Hypertrophy-zone options (previously zero coverage)
-    {"name": "Walking Lunge", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Quad Dom", "Unilateral"]},
-    {"name": "Bulgarian Split Squat", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Lunge", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Quad Dom", "Unilateral"]},
-    {"name": "Heels-Elevated Goblet Squat", "level": 1, "tier": "Lower Body", "type": "Auxiliary", "pattern": "Squat", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Quad Dom"]},
 
     # --- UPPER BODY: PRIMARY ---
     {"name": "Push Ups", "level": 2, "tier": "Upper Body", "type": "Primary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["UB Push", "Horizontal"]},
@@ -137,56 +99,6 @@ DEFAULT_EXERCISES = [
     {"name": "Chest Supported Row", "level": 1, "tier": "Upper Body", "type": "Secondary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["UB Pull", "Horizontal"]},
     {"name": "Seated Cable Row", "level": 1, "tier": "Upper Body", "type": "Secondary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["UB Pull", "Horizontal"]},
     {"name": "Lat Pulldown", "level": 1, "tier": "Upper Body", "type": "Secondary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["UB Pull", "Vertical"]},
-
-    # Level 1 (true intro/reactive work — previously only Box Jump existed at this level)
-    {"name": "Pogo Hops", "level": 1, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive"]},
-    {"name": "Ankle Bounds", "level": 1, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive"]},
-    {"name": "Single Leg Pogo Hops", "level": 1, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Reactive", "Unilateral"]},
-
-    # Level 2 (unilateral + multi-directional — frontal/lateral plane was entirely absent)
-    {"name": "Single Leg Broad Jump", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral"]},
-    {"name": "Skater Bound", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Frontal Plane"]},
-    {"name": "Lateral Hurdle Hops", "level": 2, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Frontal Plane"]},
-
-    # Level 3 (advanced reactive/unilateral — previously only Depth Jump existed at this level)
-    {"name": "Single Leg Depth Jump", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Reactive"]},
-    {"name": "Bounding", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Unilateral", "Horizontal"]},
-    {"name": "Depth Jump to Broad Jump", "level": 3, "tier": "Plyo", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Complex"]},
-
-    # Strength-Speed zone (previously empty — you had Speed-Strength covered but nothing heavier-loaded)
-    {"name": "Weighted Depth Jump", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Power"]},
-    {"name": "Loaded Skater Bound", "level": 3, "tier": "Plyo", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "Strength-Speed", "tags": ["Plyo", "Unilateral", "Power"]},
-
-    # Progressions for previously single-level exercises
-    {"name": "Single Leg Calf Raise", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Calf", "Unilateral"]},
-    {"name": "Weighted Calf Raise", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Calf"]},
-
-    {"name": "Copenhagen Plank", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Adductor", "Unilateral"]},
-    {"name": "Standing Cable Adduction", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Adductor", "Unilateral"]},
-
-    {"name": "Cable Lateral Raise", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
-    {"name": "Leaning Single Arm Lateral Raise", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder", "Unilateral"]},
-
-    {"name": "Band Reverse Fly", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
-    {"name": "Prone Y-T-W Raise", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
-
-    {"name": "Cable Face Pull", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
-    {"name": "High-to-Low Face Pull", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
-
-    # Lateral Core (previously 1 exercise: Kneeling Side Plank)
-    {"name": "Side Plank", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"]},
-    {"name": "Weighted Side Plank", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"]},
-    {"name": "Suitcase Hold", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Carry", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"]},
-
-    # Rotational Core (previously 1 exercise: Band Rotations)
-    {"name": "Half-Kneeling Cable Chop", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"]},
-    {"name": "Standing Cable Woodchop", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"]},
-    {"name": "Med Ball Rotational Throw", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "High Velocity", "tags": ["Iso", "Rotational Core", "Explosive"]},
-
-    # Quad isolation (previously absent)
-    {"name": "Leg Extension", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Quad Dom"]},
-    {"name": "Sissy Squat", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Quad Dom"]},
-
 
     # --- ISO & ACCESSORY (Auxiliary) ---
     {"name": "Bicep Curl", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Arm"]},
@@ -278,7 +190,6 @@ def load_data():
             with open(PROTOCOL_FILE, 'w') as f: json.dump(protocols, f, indent=4)
             
     return exercises, protocols
-
 
 master_exercises, t1_schemes = load_data()
 
@@ -445,6 +356,82 @@ def apply_progression(scheme_str, offset):
 
     return re.sub(r'(\d+)\s*x\s*(\d+)', replacer, scheme_str, count=1)
 
+# --- PRILEPIN'S CHART ---
+PRILEPIN_ZONE_COLORS = {
+    'Hypertrophy (<70%)': '#e67e22',
+    'Strength_Hyp (70 - 80%)': '#f1c40f',
+    'Strength (80-90%)': '#3498db',
+    'Max Strength (>90%)': '#8e44ad',
+}
+
+PRILEPIN_CHART = [
+    {'zone': 'Hypertrophy (<70%)', 'rep_range': (3, 6), 'optimal': 24, 'total_range': (18, 30)},
+    {'zone': 'Strength_Hyp (70 - 80%)', 'rep_range': (3, 6), 'optimal': 18, 'total_range': (12, 24)},
+    {'zone': 'Strength (80-90%)', 'rep_range': (2, 4), 'optimal': 15, 'total_range': (10, 20)},
+    {'zone': 'Max Strength (>90%)', 'rep_range': (1, 2), 'optimal': 7, 'total_range': (4, 10)},
+]
+
+def expand_prilepin_chart(chart):
+    expanded = []
+    for zone in chart:
+        rep_min, rep_max = zone['rep_range']
+        total_min, total_max = zone['total_range']
+        for reps in range(rep_min, rep_max + 1):
+            min_sets = -(-total_min // reps)
+            max_sets = total_max // reps
+            for sets in range(min_sets, max_sets + 1):
+                total_reps = reps * sets
+                if total_min <= total_reps <= total_max:
+                    expanded.append({'zone': zone['zone'], 'reps': reps, 'sets': sets, 'total_reps': total_reps})
+    return expanded
+
+def build_prilepin_figure(combinations):
+    zones = sorted(set(c['zone'] for c in combinations))
+    fig, axes = plt.subplots(2, 2, figsize=(10, 8))
+    axes = axes.flatten()
+
+    for ax, zone in zip(axes, zones):
+        zone_data = [c for c in combinations if c['zone'] == zone]
+        reps_list = sorted(set(c['reps'] for c in zone_data))
+        sets_list = sorted(set(c['sets'] for c in zone_data))
+        grid = np.full((len(sets_list), len(reps_list)), np.nan)
+        for c in zone_data:
+            row = sets_list.index(c['sets'])
+            col = reps_list.index(c['reps'])
+            grid[row, col] = c['total_reps']
+
+        color = PRILEPIN_ZONE_COLORS.get(zone, '#7f8c8d')
+        rgb = mcolors.to_rgb(color)
+        rgba_image = np.ones((len(sets_list), len(reps_list), 4))
+        rgba_image[..., :3] = rgb
+        rgba_image[..., 3] = np.where(np.isnan(grid), 0, 1)
+
+        ax.imshow(rgba_image, aspect='auto')
+        ax.set_xticks(range(len(reps_list)))
+        ax.set_xticklabels(reps_list)
+        ax.set_yticks(range(len(sets_list)))
+        ax.set_yticklabels(sets_list)
+        ax.set_xlabel('Reps')
+        ax.set_ylabel('Sets')
+        ax.set_title(zone, fontsize=11, fontweight='bold')
+
+        for row in range(len(sets_list)):
+            for col in range(len(reps_list)):
+                value = grid[row, col]
+                if not np.isnan(value):
+                    ax.text(col, row, int(value), ha='center', va='center', fontsize=9, fontweight='bold', color='white')
+
+        ax.set_xticks(np.arange(-0.5, len(reps_list), 1), minor=True)
+        ax.set_yticks(np.arange(-0.5, len(sets_list), 1), minor=True)
+        ax.grid(which='minor', color='white', linewidth=2)
+        ax.tick_params(which='minor', length=0)
+
+    legend_patches = [mpatches.Patch(color=c, label=l) for l, c in PRILEPIN_ZONE_COLORS.items()]
+    fig.legend(handles=legend_patches, loc='lower center', ncol=2, fontsize=9, framealpha=0.9)
+    fig.suptitle("Prilepin's Chart — valid reps x sets combinations by zone", fontsize=14, fontweight='bold', y=1.02)
+    fig.tight_layout(rect=[0, 0.06, 1, 1])
+    return fig
+
 # --- 7. UI STRUCTURE ---
 st.title(f"🏋️ Strength Programme Builder {APP_VERSION}")
 with st.sidebar:
@@ -455,7 +442,7 @@ with st.sidebar:
         st.session_state.clear()
         st.rerun()
 
-tab_builder, tab_db, tab_protocols, tab_calc = st.tabs(["🏗️ Program Builder", "📚 Exercise Database", "📈 Protocol Library", "🧮 Load Calculator"])
+tab_builder, tab_db, tab_protocols, tab_calc, tab_prilepin = st.tabs(["🏗️ Program Builder", "📚 Exercise Database", "📈 Protocol Library", "🧮 Load Calculator", "📊 Prilepin's Chart"])
 
 # ==========================================
 # TAB 1: PROGRAM BUILDER
@@ -801,10 +788,6 @@ with tab_builder:
 with tab_db:
     st.header("📚 Master Exercise Library")
     
-    
-            
-
-    
     c1, c2, c3, c4 = st.columns([2, 1, 1, 1])
     s_term = c1.text_input("🔍 Search DB")
     f_tier = c2.multiselect("Filter Tier", ["Total Body", "Lower Body", "Upper Body", "Plyo", "Iso"])
@@ -833,8 +816,6 @@ with tab_db:
 # ==========================================
 with tab_protocols:
     st.header("📈 Protocol Library")
-    
-
     
     view_phase = st.radio("View Phase", ["Accumulation", "Intensification", "Realisation"], horizontal=True)
     current_data = t1_schemes.get(view_phase, {})
@@ -893,3 +874,19 @@ with tab_calc:
             
             st.dataframe(calculated_data, use_container_width=True, hide_index=True)
             st.caption(f"Training Max used: {one_rm * (tm_pct/100)} kg/lbs")
+
+# ==========================================
+# TAB 5: PRILEPIN'S CHART
+# ==========================================
+with tab_prilepin:
+    st.header("📊 Prilepin's Chart")
+    st.caption("Valid reps x sets combinations per intensity zone, based on Prilepin's total-rep guidelines.")
+
+    combinations = expand_prilepin_chart(PRILEPIN_CHART)
+    fig = build_prilepin_figure(combinations)
+    st.pyplot(fig)
+
+    buf = BytesIO()
+    fig.savefig(buf, format="png", dpi=150, bbox_inches="tight")
+    st.download_button("Download Chart (PNG)", buf.getvalue(), "prilepin_heatmaps.png", "image/png")
+    plt.close(fig)
