@@ -25,7 +25,7 @@ DEFAULT_EXERCISES = [
     {"name": "BB Thruster", "level": 2, "tier": "Total Body", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Power", "Push"]},
     {"name": "Squat Jerk", "level": 3, "tier": "Total Body", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Power", "Push"]},
     {"name": "Split Jerk", "level": 3, "tier": "Total Body", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "High Velocity", "tags": ["Plyo", "Power", "Push"]},
-    {"name": "Kettlebell Swing", "level": 1, "tier": "Total Body", "type": "Secondary", "pattern": "Hinge", "stance": "Bilateral", "fv_zone": "Speed-Strength", "tags": ["Ham Dom", "Hinge"]},
+    {"name": "Kettlebell Swing", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Hinge", "stance": "Bilateral", "fv_zone": "Speed-Strength", "tags": ["Ham Dom", "Hinge"]},
     {"name": "DB Clean", "level": 1, "tier": "Total Body", "type": "Secondary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Speed-Strength", "tags": ["Explosive", "Power"]},
     {"name": "DB SA Snatch", "level": 1, "tier": "Total Body", "type": "Secondary", "pattern": "Power", "stance": "Unilateral", "fv_zone": "Speed-Strength", "tags": ["Explosive", "Power"]},
     {"name": "Hang Clean", "level": 2, "tier": "Total Body", "type": "Primary", "pattern": "Power", "stance": "Bilateral", "fv_zone": "Strength-Speed", "tags": ["Explosive", "Pull"]},
@@ -43,11 +43,11 @@ DEFAULT_EXERCISES = [
     {"name": "Deadlift", "level": 3, "tier": "Total Body", "type": "Primary", "pattern": "Hinge", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Pull", "Hinge"]},
     
     # --- TOTAL BODY: ASSISTANCE (Secondary) ---
-    {"name": "Hip Hinge", "level": 1, "tier": "Total Body", "type": "Secondary", "pattern": "Hinge", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
-    {"name": "SL RDL", "level": 2, "tier": "Total Body", "type": "Secondary", "pattern": "Hinge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
-    {"name": "SL Goodmorning", "level": 2, "tier": "Total Body", "type": "Secondary", "pattern": "Hinge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
-    {"name": "Barbell RDL", "level": 3, "tier": "Total Body", "type": "Secondary", "pattern": "Hinge", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
-    {"name": "Goodmorning", "level": 3, "tier": "Total Body", "type": "Secondary", "pattern": "Hinge", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
+    {"name": "Hip Hinge", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Hinge", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
+    {"name": "SL RDL", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Hinge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
+    {"name": "SL Goodmorning", "level": 2, "tier": "Lower Body", "type": "Secondary", "pattern": "Hinge", "stance": "Unilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
+    {"name": "Barbell RDL", "level": 3, "tier": "Lower Body", "type": "Secondary", "pattern": "Hinge", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
+    {"name": "Goodmorning", "level": 3, "tier": "Lower Body", "type": "Secondary", "pattern": "Hinge", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["Ham Dom", "Pull"]},
     
     # --- CARRIES (Auxiliary) ---
     {"name": "DB Farmer Carry", "level": 1, "tier": "Total Body", "type": "Auxiliary", "pattern": "Carry", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Core", "Carry"]},
