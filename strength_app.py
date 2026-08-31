@@ -1,7 +1,5 @@
 import streamlit as st
 import random
-import json
-import os
 import re
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -14,9 +12,7 @@ from io import BytesIO
 APP_VERSION = "v7.0"
 st.set_page_config(page_title=f"Strength Programme Builder {APP_VERSION}", layout="wide", page_icon="🏋️")
 
-EXERCISE_FILE = "exercises.json"
-PROTOCOL_FILE = "protocols.json"
- 
+
 # --- 2. DEFAULT DATA ---
 DEFAULT_EXERCISES = [
     # --- TOTAL BODY: OLYMPIC / POWER (Primary) ---
@@ -161,36 +157,10 @@ DEFAULT_PROTOCOLS = {
 
 # --- 3. ROBUST DATA LOADING (FIXED) ---
 def load_data():
-    # EXERCISES
-    if not os.path.exists(EXERCISE_FILE):
-        with open(EXERCISE_FILE, 'w') as f: json.dump(DEFAULT_EXERCISES, f, indent=4)
-        exercises = DEFAULT_EXERCISES
-    else:
-        with open(EXERCISE_FILE, 'r') as f: exercises = json.load(f)
-        
-    # PROTOCOLS (WITH MERGE LOGIC)
-    if not os.path.exists(PROTOCOL_FILE):
-        with open(PROTOCOL_FILE, 'w') as f: json.dump(DEFAULT_PROTOCOLS, f, indent=4)
-        protocols = DEFAULT_PROTOCOLS
-    else:
-        with open(PROTOCOL_FILE, 'r') as f: protocols = json.load(f)
-        
-        # MERGE LOGIC: Force code defaults into existing file
-        updated = False
-        for phase, data in DEFAULT_PROTOCOLS.items():
-            if phase not in protocols:
-                protocols[phase] = data
-                updated = True
-            else:
-                for scheme_name, scheme_data in data.items():
-                    if scheme_name not in protocols[phase]:
-                        protocols[phase][scheme_name] = scheme_data
-                        updated = True
-        
-        if updated:
-            with open(PROTOCOL_FILE, 'w') as f: json.dump(protocols, f, indent=4)
-            
-    return exercises, protocols
+    # No file caching: this always reflects DEFAULT_EXERCISES/DEFAULT_PROTOCOLS
+    # in the code directly, since there's no UI path that writes changes back
+    # to disk anymore — a cached copy would only ever go stale.
+    return DEFAULT_EXERCISES, DEFAULT_PROTOCOLS
 
 master_exercises, t1_schemes = load_data()
 
@@ -501,9 +471,7 @@ def build_rep_load_figure(color_table, text_table, title, subtitle, value_fmt):
 st.title(f"🏋️ Strength Programme Builder {APP_VERSION}")
 with st.sidebar:
     st.write("🔧 **Tools**")
-    if st.button("🗑️ Reset All Data (Use if buggy)"):
-        if os.path.exists(EXERCISE_FILE): os.remove(EXERCISE_FILE)
-        if os.path.exists(PROTOCOL_FILE): os.remove(PROTOCOL_FILE)
+    if st.button("🔄 Reset Session (clear cycle count, history, progression)"):
         st.session_state.clear()
         st.rerun()
 
