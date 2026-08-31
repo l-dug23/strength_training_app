@@ -3,6 +3,7 @@ import random
 import json
 import os
 import re
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.colors as mcolors
@@ -432,6 +433,70 @@ def build_prilepin_figure(combinations):
     fig.tight_layout(rect=[0, 0.06, 1, 1])
     return fig
 
+# --- REP-LOAD CHART (BRZYCKI) ---
+def pct_1rm_brzycki(reps, rir=0):
+    total_reps = reps + rir
+    return (37 - total_reps) / 36
+
+def build_pct_table(reps_range, rir_range):
+    t = pd.DataFrame(
+        {rir: [round(pct_1rm_brzycki(r, rir) * 100, 1) for r in reps_range] for rir in rir_range},
+        index=list(reps_range)
+    )
+    t.index.name = 'Reps'
+    t.columns.name = 'RIR'
+    return t
+
+def build_individual_load_table(one_rm, reps_range, rir_range, increment=2.5):
+    t = pd.DataFrame(
+        {rir: [round((one_rm * pct_1rm_brzycki(r, rir)) / increment) * increment for r in reps_range] for rir in rir_range},
+        index=list(reps_range)
+    )
+    t.index.name = 'Reps'
+    t.columns.name = 'RIR'
+    return t
+
+def build_rep_load_figure(color_table, text_table, title, subtitle, value_fmt):
+    """Shared plotting logic for both the %1RM zone chart and the kg-load chart.
+    color_table always drives the zone colouring (0-100% scale); text_table
+    supplies the numbers shown in each cell (can be % or kg)."""
+    zone_bounds = [0, 60, 70, 80, 90, 100]
+    zone_colors = ['#c0392b', '#e67e22', '#f1c40f', '#3498db', '#8e44ad']
+    zone_labels = ['Endurance (<60%)', 'Hypertrophy (60-69%)', 'Strength-Hyp (70-79%)',
+                   'Strength (80-89%)', 'Max Strength (≥90%)']
+    cmap_zones = mcolors.ListedColormap(zone_colors)
+    norm_zones = mcolors.BoundaryNorm(zone_bounds, cmap_zones.N)
+
+    fig, ax = plt.subplots(figsize=(8, max(6, len(text_table.index) * 0.35)))
+    ax.imshow(color_table.values, cmap=cmap_zones, norm=norm_zones, aspect='auto')
+
+    for i in range(len(text_table.index)):
+        for j in range(len(text_table.columns)):
+            val = text_table.values[i, j]
+            ax.text(j, i, value_fmt(val), ha='center', va='center', fontsize=9, fontweight='bold', color='white')
+
+    ax.set_xticks(range(len(text_table.columns)))
+    ax.set_xticklabels([f'RIR {c}' for c in text_table.columns], fontsize=11, fontweight='bold')
+    ax.set_yticks(range(len(text_table.index)))
+    ax.set_yticklabels(text_table.index, fontsize=10)
+    ax.xaxis.set_label_position('top')
+    ax.xaxis.tick_top()
+
+    fig.suptitle(title, fontsize=14, fontweight='bold', y=1.02)
+    ax.set_title(subtitle, fontsize=9, color='#555555', pad=12)
+
+    legend_patches = [mpatches.Patch(color=c, label=l) for c, l in zip(zone_colors, zone_labels)]
+    ax.legend(handles=legend_patches, loc='lower right', bbox_to_anchor=(1, -0.15),
+              fontsize=8, ncol=2, framealpha=0.9)
+
+    ax.set_xticks(np.arange(-0.5, len(text_table.columns), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(text_table.index), 1), minor=True)
+    ax.grid(which='minor', color='white', linewidth=2)
+    ax.tick_params(which='minor', length=0)
+
+    fig.tight_layout()
+    return fig
+
 # --- 7. UI STRUCTURE ---
 st.title(f"🏋️ Strength Programme Builder {APP_VERSION}")
 with st.sidebar:
@@ -442,7 +507,7 @@ with st.sidebar:
         st.session_state.clear()
         st.rerun()
 
-tab_builder, tab_db, tab_protocols, tab_calc, tab_prilepin = st.tabs(["🏗️ Program Builder", "📚 Exercise Database", "📈 Protocol Library", "🧮 Load Calculator", "📊 Prilepin's Chart"])
+tab_builder, tab_db, tab_protocols, tab_calc, tab_prilepin, tab_replen = st.tabs(["🏗️ Program Builder", "📚 Exercise Database", "📈 Protocol Library", "🧮 Load Calculator", "📊 Prilepin's Chart", "🎯 Rep-Load Chart"])
 
 # ==========================================
 # TAB 1: PROGRAM BUILDER
@@ -890,3 +955,47 @@ with tab_prilepin:
     fig.savefig(buf, format="png", dpi=150, bbox_inches="tight")
     st.download_button("Download Chart (PNG)", buf.getvalue(), "prilepin_heatmaps.png", "image/png")
     plt.close(fig)
+
+# ==========================================
+# TAB 6: REP-LOAD CHART
+# ==========================================
+with tab_replen:
+    st.header("🎯 Rep-Load Chart (Brzycki)")
+    st.caption("Training zone and %1RM (or equivalent load) by reps x RIR.")
+
+    c1, c2 = st.columns(2)
+    rl_exercise = c1.text_input("Exercise", value="Squat", key="rl_exercise")
+    rl_one_rm = c2.number_input("1RM (kg)", min_value=0.0, value=150.0, step=2.5, key="rl_one_rm")
+
+    rl_reps_range = range(1, 16)
+    rl_rir_range = range(0, 6)
+
+    pct_table = build_pct_table(rl_reps_range, rl_rir_range)
+
+    fig_pct = build_rep_load_figure(
+        pct_table, pct_table,
+        "Rep-Load Chart — Training Zones by Reps × RIR (Brzycki)",
+        "Colour = training zone  |  Text = %1RM",
+        lambda v: f"{v:.1f}%"
+    )
+    st.pyplot(fig_pct)
+    buf_pct = BytesIO()
+    fig_pct.savefig(buf_pct, format="png", dpi=150, bbox_inches="tight")
+    st.download_button("Download %1RM Chart (PNG)", buf_pct.getvalue(), "rep_load_zones_heatmap.png", "image/png", key="dl_pct_chart")
+    plt.close(fig_pct)
+
+    st.divider()
+
+    load_table = build_individual_load_table(rl_one_rm, rl_reps_range, rl_rir_range)
+
+    fig_load = build_rep_load_figure(
+        pct_table, load_table,
+        f"Individual Load Chart — {rl_exercise} ({rl_one_rm:g}kg 1RM)",
+        "Colour = training zone  |  Text = load (kg)",
+        lambda v: f"{v:.1f} kg"
+    )
+    st.pyplot(fig_load)
+    buf_load = BytesIO()
+    fig_load.savefig(buf_load, format="png", dpi=150, bbox_inches="tight")
+    st.download_button("Download Load Chart (PNG)", buf_load.getvalue(), "indy_rep_load_zones_heatmap.png", "image/png", key="dl_load_chart")
+    plt.close(fig_load)
