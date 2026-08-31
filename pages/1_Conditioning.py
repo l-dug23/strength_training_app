@@ -117,21 +117,23 @@ if 'cond_history' not in st.session_state:
     st.session_state.cond_history = []
 
 # --- 4. DEFAULT PROTOCOL LIBRARY ---
-# PLACEHOLDER CONTENT: structural examples only. Each protocol is defined by a
-# single base prescription (reps, effort duration in seconds, rest in seconds,
-# intensity type/%). The week-by-week plan is generated at build time from
-# whichever variable is chosen to progress (Reps/Sets, Volume/Duration, or
-# Intensity) and whichever unit (Time or Distance) is chosen to plan off.
-# Replace these with your own prescriptions before using this for real programming.
+# Mapped from Laursen & Buchheit's HIIT Science typology (Sports Medicine 2013,
+# Parts I & II; Science and Application of High-Intensity Interval Training):
+#   Capacity      -> Long Intervals   (2-5 min work, 1-3 min recovery, ~90-100% MAS)
+#   Output        -> Short Intervals  (10-60s work, <60s recovery, ~100-120% MAS)
+#   Repeatability -> Repeated Sprint Training (3-10s work, <45s recovery, ASR domain)
+# The specific reps/intensity values below are a starting point sitting within
+# those sourced ranges, not verbatim book values (I don't have page-level access
+# to the book itself) — review and adjust before using for real programming.
 RUNNING_PROTOCOLS = {
     "Capacity": {
-        "Long_Intervals": {"reps": 6, "effort_s": 180, "rest_s": 90, "intensity_type": "MAS", "intensity_pct": 85},
+        "Long_Intervals": {"reps": 6, "effort_s": 180, "rest_s": 90, "intensity_type": "MAS", "intensity_pct": 92},
     },
     "Output": {
-        "VO2max_Reps": {"reps": 8, "effort_s": 90, "rest_s": 90, "intensity_type": "MAS", "intensity_pct": 100},
+        "Short_Intervals": {"reps": 10, "effort_s": 30, "rest_s": 30, "intensity_type": "MAS", "intensity_pct": 110},
     },
     "Repeatability": {
-        "Short_Rep_Sprint": {"reps": 10, "effort_s": 6, "rest_s": 24, "intensity_type": "ASR", "intensity_pct": 30},
+        "Repeated_Sprints": {"reps": 10, "effort_s": 6, "rest_s": 24, "intensity_type": "ASR", "intensity_pct": 30},
     },
 }
 
