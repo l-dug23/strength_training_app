@@ -548,7 +548,17 @@ with tab_builder:
 
         if st.button("🎲 Create Draft Program", type="primary"):
             st.session_state.draft_plan = [] 
-            temp_used = []
+
+            # Pre-register every exercise already locked in via an override or
+            # "Keep Previous T1s", so auto-picks made EARLIER in the loop (e.g.
+            # Session 1's T1) can't randomly duplicate a name that a LATER slot
+            # (e.g. Session 3's overridden T1) is about to use. Without this,
+            # exclusion only worked in the direction the loop runs.
+            temp_used = list(override_ex.values())
+            if use_fixed_t1 and st.session_state.previous_t1:
+                for name in st.session_state.previous_t1:
+                    if name not in temp_used:
+                        temp_used.append(name)
             
             for i, template in enumerate(default_rotation):
                 session_data = {"meta": template}
