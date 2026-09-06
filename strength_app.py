@@ -130,7 +130,31 @@ DEFAULT_PROTOCOLS = {
         "Triphasic_Isometric": {"Base": "4x5 @ 72% (3s Pause)", "Load 1": "4x4 @ 77% (3s Pause)", "Load 2": "4x3 @ 82% (3s Pause)", "De-Re-Load": "3x3 @ 65% (No Pause)", "Perform": "3x2 @ 87% (Fast)", "De-load": "3x5 @ 50%"},
         "VAT_568": {"Base": "3x5 @ 72.5, 75, 77.5%", "Load 1": "3x6 @ 77.5%", "Load 2": "3x8 @ 77.5%", "De-Re-Load": "3x5 @ 77.5%", "Perform": "3x8 @ 77.5%", "De-load": "3x5 @ 62.5%"},
         "Juggernaut_10s": {"Base": "5x10 @ 60% (RPE 8)", "Load 1": "5x10 @ 67.5% (RPE 9)", "Load 2": "3x10 @ 75% (RPE 9.5)", "De-Re-Load": "3x10 @ 60%", "Perform": "AMRAP Set @ 75%", "De-load": "2x10 @ 50%"},
-        "Cluster_Hypertrophy": {"Base": "3x(4+4+4) @ 70% [15s rest]", "Load 1": "3x(5+5+5) @ 70% [15s rest]", "Load 2": "4x(5+5+5) @ 70% [15s rest]", "De-Re-Load": "2x(4+4+4) @ 65%", "Perform": "3x(6+6+6) @ 70%", "De-load": "3x8 Straight Sets @ 60%"}
+        "Cluster_Hypertrophy": {"Base": "3x(4+4+4) @ 70% [15s rest]", "Load 1": "3x(5+5+5) @ 70% [15s rest]", "Load 2": "4x(5+5+5) @ 70% [15s rest]", "De-Re-Load": "2x(4+4+4) @ 65%", "Perform": "3x(6+6+6) @ 70%", "De-load": "3x8 Straight Sets @ 60%"},
+        "Prilepin_Ramp_3Step": {
+            "Base":       "6,5,4 @ 55,62,68%",
+            "Load 1":     "6,5,4 @ 60,67,73%",
+            "Load 2":     "5,4,3 @ 65,72,78%",
+            "De-Re-Load": "6,5 @ 55,60%",
+            "Perform":    "4,3,2 @ 70,77,83%",
+            "De-load":    "6,5 @ 50,55%"
+        },
+        "Prilepin_Ramp_4Step": {
+            "Base":       "6,5,4,3 @ 55,60,65,70%",
+            "Load 1":     "6,5,4,3 @ 58,63,68,73%",
+            "Load 2":     "5,4,3,2 @ 62,68,74,80%",
+            "De-Re-Load": "6,5,4 @ 52,57,62%",
+            "Perform":    "5,4,3,2 @ 65,71,77,82%",
+            "De-load":    "6,5,4 @ 50,54,58%"
+        },
+        "Prilepin_Double_Wave": {
+            "Base":       "2 Waves: 6,5,4 @ 58,64,70%",
+            "Load 1":     "2 Waves: 5,4,3 @ 62,68,74%",
+            "Load 2":     "2 Waves: 5,4,3 @ 66,72,78%",
+            "De-Re-Load": "1 Wave: 6,5,4 @ 55,60,65%",
+            "Perform":    "2 Waves: 4,3,2 @ 70,76,82%",
+            "De-load":    "1 Wave: 6,5 @ 50,55%"
+        }
     },
     "Intensification": {
         "Classic_5x5": {"Base": "5x5 @ 70% (Linear)", "Load 1": "5x5 @ 72.5% (Linear)", "Load 2": "5x5 @ 75% (Linear)", "De-Re-Load": "3x5 @ 60%", "Perform": "5x5 @ 80% (Test)", "De-load": "3x5 @ 50%"},
@@ -145,7 +169,31 @@ DEFAULT_PROTOCOLS = {
             "Perform": "3 x 5,3,2 @ 75,82.5,87.5%"
         },
         "Wendler_531_Classic": {"Base": "5/5/5+ @ 65, 75, 85%", "Load 1": "3/3/3+ @ 70, 80, 90%", "Load 2": "5/3/1+ @ 75, 85, 95%", "De-Re-Load": "3x5 @ 60% (Deload)", "Perform": "TM Test: 3-5 reps @ 100% TM", "De-load": "3x5 @ 50%"},
-        "Cluster_Strength": {"Base": "4x(1-1-1-1-1) @ 85% [20s rest]", "Load 1": "5x(1-1-1-1-1) @ 87% [20s rest]", "Load 2": "5x(1-1-1-1-1) @ 90% [20s rest]", "De-Re-Load": "3x(1-1-1) @ 80%", "Perform": "4x(1-1-1-1-1) @ 92% [30s rest]", "De-load": "3x3 Straight Sets @ 70%"}
+        "Cluster_Strength": {"Base": "4x(1-1-1-1-1) @ 85% [20s rest]", "Load 1": "5x(1-1-1-1-1) @ 87% [20s rest]", "Load 2": "5x(1-1-1-1-1) @ 90% [20s rest]", "De-Re-Load": "3x(1-1-1) @ 80%", "Perform": "4x(1-1-1-1-1) @ 92% [30s rest]", "De-load": "3x3 Straight Sets @ 70%"},
+        "Prilepin_Ramp_Strength": {
+            "Base":       "5,4,3 @ 70,76,82%",
+            "Load 1":     "4,3,2 @ 74,80,85%",
+            "Load 2":     "4,3,2 @ 76,82,87%",
+            "De-Re-Load": "5,4,3 @ 65,70,75%",
+            "Perform":    "3,2,1 @ 80,86,91%",
+            "De-load":    "5,4 @ 60,65%"
+        },
+        "Prilepin_Ramp_MaxStrength": {
+            "Base":       "4,3,2 @ 75,82,87%",
+            "Load 1":     "3,2,1 @ 80,86,91%",
+            "Load 2":     "3,2,1 @ 82,88,93%",
+            "De-Re-Load": "4,3,2 @ 70,76,82%",
+            "Perform":    "2,1,1 @ 85,90,95%",
+            "De-load":    "4,3 @ 65,70%"
+        },
+        "Prilepin_Triple_Wave": {
+            "Base":       "3 Waves: 5,3,1 @ 70,77,84%",
+            "Load 1":     "3 Waves: 4,2,1 @ 73,80,87%",
+            "Load 2":     "3 Waves: 3,2,1 @ 76,83,90%",
+            "De-Re-Load": "2 Waves: 5,3,1 @ 65,72,79%",
+            "Perform":    "Test Max",
+            "De-load":    "3x5 @ 50%"
+        }
     },
     "Realisation": {
          "Peaking": {"Base": "3x3 @ 80%", "Load 1": "3x2 @ 85%", "Load 2": "2x2 @ 90%", "Perform": "1RM Test", "De-Re-Load": "3x1 @ 80%", "De-load": "Rest"},
