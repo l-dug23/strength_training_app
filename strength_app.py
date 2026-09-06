@@ -98,28 +98,50 @@ DEFAULT_EXERCISES = [
     {"name": "Lat Pulldown", "level": 1, "tier": "Upper Body", "type": "Secondary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Max Strength", "tags": ["UB Pull", "Vertical"]},
 
     # --- ISO & ACCESSORY (Auxiliary) ---
-    {"name": "Bicep Curl", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Arm"]},
-    {"name": "Tricep Extension", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Arm"]},
-    {"name": "Plank", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"]},
-    {"name": "BW Sit Up", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"]},
-    {"name": "Loaded Sit Up", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"]},
-    {"name": "Sit Up and Throw", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"]},
-    {"name": "Loaded Plank", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"]},
-    {"name": "Supine Hold", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"]},
-    {"name": "Loaded Supine Hold", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"]},
-    {"name": "Supine Hold Anti Extension", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"]},
-    {"name": "Kneeling Side Plank", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"]},
-    {"name": "Prone Hold", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Posterior Core"]},
-    {"name": "Band Rotations", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"]}, 
-    {"name": "Ham Bridge", "level": 1, "tier": "Lower Body", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Ham Dom"]},
-    {"name": "Ham Curls", "level": 1, "tier": "Lower Body", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Ham Dom"]},
-    {"name": "Nordic Curls", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Ham Dom"]},
-    {"name": "Glute External Clams", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Glute"]},
-    {"name": "Calf Raises", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Calf"]},
-    {"name": "Adductor Step Ins", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Adductor"]},
-    {"name": "Lateral Raises", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
-    {"name": "Reverse Flies", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]},
-    {"name": "Face Pull", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"]}
+    {"name": "Bicep Curl", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Arm"], "rep_type": "Reps"},
+    {"name": "Tricep Extension", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Arm"], "rep_type": "Reps"},
+    {"name": "Plank", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Hold"},
+    {"name": "BW Sit Up", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Reps"},
+    {"name": "Crunches", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Reps"},
+    {"name": "Loaded Sit Up", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Reps"},
+    {"name": "V-Ups", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Reps"},
+    {"name": "Hanging Leg Raises", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Reps"},
+    {"name": "Sit Up and Throw", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Reps"},
+    {"name": "Loaded Plank", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Hold"},
+    {"name": "Hollow Body Hold", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Hold"},
+    {"name": "Supine Hold", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Hold"},
+    {"name": "Loaded Supine Hold", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Hold"},
+    {"name": "Supine Hold Anti Extension", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Anterior Core"], "rep_type": "Hold"},
+
+    {"name": "Side Bends", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"], "rep_type": "Reps"},
+    {"name": "Kneeling Side Plank", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"], "rep_type": "Hold"},
+    {"name": "Side Plank", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"], "rep_type": "Hold"},
+    {"name": "Suitcase Crunches", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"], "rep_type": "Reps"},
+    {"name": "Loaded Side Plank", "level": 3, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Lateral Core"], "rep_type": "Hold"},
+
+    {"name": "Bird Dog", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Posterior Core"], "rep_type": "Reps"},
+    {"name": "Hyperextensions", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Posterior Core"], "rep_type": "Reps"},
+    {"name": "Prone Hold", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Posterior Core"], "rep_type": "Hold"},
+    {"name": "Superman Hold", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Posterior Core"], "rep_type": "Hold"},
+    {"name": "Loaded Hyperextensions", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Posterior Core"], "rep_type": "Reps"},
+    {"name": "Reverse Hyperextensions", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Posterior Core"], "rep_type": "Reps"},
+
+    {"name": "Russian Twist", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"], "rep_type": "Reps"},
+    {"name": "Cable Woodchop", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"], "rep_type": "Reps"},
+    {"name": "Band Rotations", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"], "rep_type": "Reps"},
+    {"name": "MB Rotational Throw", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"], "rep_type": "Reps"},
+    {"name": "Landmine Rotation", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"], "rep_type": "Reps"},
+    {"name": "Pallof Press Hold", "level": 2, "tier": "Iso", "type": "Auxiliary", "pattern": "Core", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Rotational Core"], "rep_type": "Hold"},
+
+    {"name": "Ham Bridge", "level": 1, "tier": "Lower Body", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Ham Dom"], "rep_type": "Reps"},
+    {"name": "Ham Curls", "level": 1, "tier": "Lower Body", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Ham Dom"], "rep_type": "Reps"},
+    {"name": "Nordic Curls", "level": 1, "tier": "Lower Body", "type": "Secondary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Ham Dom"], "rep_type": "Reps"},
+    {"name": "Glute External Clams", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Glute"], "rep_type": "Reps"},
+    {"name": "Calf Raises", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Calf"], "rep_type": "Reps"},
+    {"name": "Adductor Step Ins", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Unilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Adductor"], "rep_type": "Reps"},
+    {"name": "Lateral Raises", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Push", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"], "rep_type": "Reps"},
+    {"name": "Reverse Flies", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"], "rep_type": "Reps"},
+    {"name": "Face Pull", "level": 1, "tier": "Iso", "type": "Auxiliary", "pattern": "Pull", "stance": "Bilateral", "fv_zone": "Hypertrophy", "tags": ["Iso", "Shoulder"], "rep_type": "Reps"}
 ]
 
 DEFAULT_PROTOCOLS = {
@@ -242,7 +264,9 @@ tier_defaults = {
         "T3": "3x15", 
         "T4": "3 Sets (Quality)", 
         "Iso_Time": "3x30s",    # NEW
+        "Iso_Reps": "3x12",
         "Core_Time": "3x30s",   # NEW
+        "Core_Reps": "3x15",
         "Carry_Dist": "3x20m"   # NEW
     }, 
     "Intensification": {
@@ -250,7 +274,9 @@ tier_defaults = {
         "T3": "3x10", 
         "T4": "3 Sets (Heavy)", 
         "Iso_Time": "3x20s (Weighted)", 
+        "Iso_Reps": "3x10",
         "Core_Time": "3x20s (Weighted)",
+        "Core_Reps": "3x10 (Weighted)",
         "Carry_Dist": "3x30m"
     }, 
     "Realisation": {
@@ -258,7 +284,9 @@ tier_defaults = {
         "T3": "3x8", 
         "T4": "2 Sets (Speed/Iso)", 
         "Iso_Time": "3x10s (Max Effort)", 
+        "Iso_Reps": "3x8",
         "Core_Time": "3x15s",
+        "Core_Reps": "3x8 (Max Effort)",
         "Carry_Dist": "3x15m (Heavy)"
     }
 }
@@ -275,9 +303,9 @@ special_flows = {
 }
 
 default_rotation = [
-    {"T1": "Total Body", "T2": "Lower Body", "T3": "Upper Body", "T4": "Iso"},
-    {"T1": "Lower Body", "T2": "Upper Body", "T3": "Total Body", "T4": "Iso"},
-    {"T1": "Upper Body", "T2": "Total Body", "T3": "Lower Body", "T4": "Iso"}
+    {"T1": "Total Body", "T2": "Lower Body", "T3": "Upper Body", "T4": "Iso", "T4_Core": "Anterior Core"},
+    {"T1": "Lower Body", "T2": "Upper Body", "T3": "Total Body", "T4": "Iso", "T4_Core": "Lateral Core"},
+    {"T1": "Upper Body", "T2": "Total Body", "T3": "Lower Body", "T4": "Iso", "T4_Core": "Rotational Core"}
 ]
 
 # --- 6. LOGIC FUNCTIONS ---
@@ -634,6 +662,7 @@ with tab_builder:
                         avoid_pattern = None
                         req_pat = None
                         req_type = None 
+                        req_tag = None
                         
                         fuzzy_bad = t1_attributes["name"] if tier_key == "T2" else None 
                         
@@ -648,8 +677,9 @@ with tab_builder:
                         elif tier_key == "T4":
                             req_pat = "Core"
                             req_type = ["Auxiliary"]
+                            req_tag = template.get("T4_Core")  # targets this session's core sub-category
 
-                        primary_ex = get_smart_ex(tier=tier_group, required_type=req_type, required_pattern=req_pat, level=user_level, exclude_names=temp_used, exclude_stance=avoid_stance, exclude_pattern=avoid_pattern, fuzzy_exclude=fuzzy_bad)
+                        primary_ex = get_smart_ex(tier=tier_group, required_tag=req_tag, required_type=req_type, required_pattern=req_pat, level=user_level, exclude_names=temp_used, exclude_stance=avoid_stance, exclude_pattern=avoid_pattern, fuzzy_exclude=fuzzy_bad)
 
                     if tier_key == "T1":
                         t1_attributes["stance"] = primary_ex.get("stance")
@@ -822,11 +852,21 @@ with tab_builder:
                                 pattern = main_ex_obj.get("pattern", "None")
                                 
                                 # TIME / DISTANCE LOGIC (Carry checked first: carry exercises are
-                                # also tagged "Core", so the Core branch must not shadow Carry)
+                                # also tagged "Core", so the Core branch must not shadow Carry.
+                                # Core checked before generic Iso, since Core exercises also carry
+                                # the "Iso" tag and would otherwise be caught by that branch first.)
                                 if pattern == "Carry" or "Carry" in tags:
                                     base_sch = tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m")
-                                elif "Iso" in tags or "Core" in tags or pattern == "Core":
-                                    base_sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
+                                elif "Core" in tags or pattern == "Core":
+                                    if main_ex_obj.get("rep_type") == "Reps":
+                                        base_sch = tier_defaults.get(phase_input, {}).get("Core_Reps", "3x15")
+                                    else:
+                                        base_sch = tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s")
+                                elif "Iso" in tags:
+                                    if main_ex_obj.get("rep_type") == "Hold":
+                                        base_sch = tier_defaults.get(phase_input, {}).get("Iso_Time", "3x30s")
+                                    else:
+                                        base_sch = tier_defaults.get(phase_input, {}).get("Iso_Reps", "3x12")
                                 else:
                                     # Standard Reps
                                     base_sch = tier_defaults.get(phase_input, {}).get(t, "3 Sets")
@@ -852,10 +892,19 @@ with tab_builder:
                                     aux_offset = st.session_state.accessory_progression.get(t, 0)
                                     
                                     # If Aux is Core/Iso/Carry, give it time/distance instead of reps
+                                    # (Core checked before generic Iso, same reasoning as the main block above)
                                     if aux_pattern == "Carry" or "Carry" in aux_tags:
                                         aux_sch = apply_progression(tier_defaults.get(phase_input, {}).get("Carry_Dist", "3x20m"), aux_offset)
-                                    elif "Iso" in aux_tags or "Core" in aux_tags or aux_pattern == "Core":
-                                        aux_sch = apply_progression(tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s"), aux_offset)
+                                    elif "Core" in aux_tags or aux_pattern == "Core":
+                                        if aux_obj.get("rep_type") == "Reps":
+                                            aux_sch = apply_progression(tier_defaults.get(phase_input, {}).get("Core_Reps", "3x15"), aux_offset)
+                                        else:
+                                            aux_sch = apply_progression(tier_defaults.get(phase_input, {}).get("Core_Time", "3x30s"), aux_offset)
+                                    elif "Iso" in aux_tags:
+                                        if aux_obj.get("rep_type") == "Hold":
+                                            aux_sch = apply_progression(tier_defaults.get(phase_input, {}).get("Iso_Time", "3x30s"), aux_offset)
+                                        else:
+                                            aux_sch = apply_progression(tier_defaults.get(phase_input, {}).get("Iso_Reps", "3x12"), aux_offset)
                                         
                                     prog.append(f"  {t}{let}: {aux.ljust(22)} | {aux_sch}")
                             else:
