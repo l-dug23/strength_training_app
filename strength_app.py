@@ -154,7 +154,11 @@ DEFAULT_PROTOCOLS = {
             "De-Re-Load": "1 Wave: 6,5,4 @ 55,60,65%",
             "Perform":    "2 Waves: 4,3,2 @ 70,76,82%",
             "De-load":    "1 Wave: 6,5 @ 50,55%"
-        }
+        },
+        "Flat_Hold_3x10": {"Base": "3x10 @ 60%", "Load 1": "3x10 @ 65%", "Load 2": "3x10 @ 70%", "De-Re-Load": "3x10 @ 60%", "Perform": "3x10 @ 72%", "De-load": "3x10 @ 55%"},
+        "Flat_Hold_3x8":  {"Base": "3x8 @ 62%",  "Load 1": "3x8 @ 68%",  "Load 2": "3x8 @ 74%",  "De-Re-Load": "3x8 @ 62%",  "Perform": "3x8 @ 77%",  "De-load": "3x8 @ 57%"},
+        "Flat_Hold_4x6":  {"Base": "4x6 @ 65%",  "Load 1": "4x6 @ 70%",  "Load 2": "4x6 @ 75%",  "De-Re-Load": "4x6 @ 65%",  "Perform": "4x6 @ 78%",  "De-load": "4x6 @ 60%"},
+        "Flat_Hold_5x5":  {"Base": "5x5 @ 62%",  "Load 1": "5x5 @ 67%",  "Load 2": "5x5 @ 72%",  "De-Re-Load": "5x5 @ 62%",  "Perform": "5x5 @ 75%",  "De-load": "5x5 @ 57%"}
     },
     "Intensification": {
         "Classic_5x5": {"Base": "5x5 @ 70% (Linear)", "Load 1": "5x5 @ 72.5% (Linear)", "Load 2": "5x5 @ 75% (Linear)", "De-Re-Load": "3x5 @ 60%", "Perform": "5x5 @ 80% (Test)", "De-load": "3x5 @ 50%"},
@@ -193,7 +197,12 @@ DEFAULT_PROTOCOLS = {
             "De-Re-Load": "2 Waves: 5,3,1 @ 65,72,79%",
             "Perform":    "Test Max",
             "De-load":    "3x5 @ 50%"
-        }
+        },
+        "Flat_Hold_3x5": {"Base": "3x5 @ 72%", "Load 1": "3x5 @ 77%", "Load 2": "3x5 @ 82%", "De-Re-Load": "3x5 @ 70%", "Perform": "3x5 @ 85%", "De-load": "3x5 @ 62%"},
+        "Flat_Hold_4x4": {"Base": "4x4 @ 74%", "Load 1": "4x4 @ 79%", "Load 2": "4x4 @ 84%", "De-Re-Load": "4x4 @ 72%", "Perform": "4x4 @ 87%", "De-load": "4x4 @ 64%"},
+        "Flat_Hold_5x3": {"Base": "5x3 @ 76%", "Load 1": "5x3 @ 81%", "Load 2": "5x3 @ 86%", "De-Re-Load": "5x3 @ 74%", "Perform": "5x3 @ 89%", "De-load": "5x3 @ 66%"},
+        "Flat_Hold_3x3": {"Base": "3x3 @ 80%", "Load 1": "3x3 @ 84%", "Load 2": "3x3 @ 88%", "De-Re-Load": "3x3 @ 76%", "Perform": "3x3 @ 91%", "De-load": "3x3 @ 68%"},
+        "Flat_Hold_5x2": {"Base": "5x2 @ 83%", "Load 1": "5x2 @ 87%", "Load 2": "5x2 @ 90%", "De-Re-Load": "5x2 @ 78%", "Perform": "5x2 @ 93%", "De-load": "5x2 @ 70%"}
     },
     "Realisation": {
          "Peaking": {"Base": "3x3 @ 80%", "Load 1": "3x2 @ 85%", "Load 2": "2x2 @ 90%", "Perform": "1RM Test", "De-Re-Load": "3x1 @ 80%", "De-load": "Rest"},
